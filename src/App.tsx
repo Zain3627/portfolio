@@ -456,7 +456,7 @@ const researchItems: ResearchItem[] = [
 const certificateItems: CertificateItem[] = [
   {
     title: 'Personal Achievement Certificate',
-    fileUrl: certificateUrls[2],
+    fileUrl: certificateUrls[2].toString(),
     achievement:
       'This certificate shows continued progress and effort in the areas where I keep building my portfolio and technical profile.',
     learned:
@@ -465,7 +465,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Certificate of Achievement',
-    fileUrl: certificateUrls[1],
+    fileUrl: certificateUrls[1].toString(),
     achievement:
       'This recognition represents a formal milestone from my academic and technical journey as documented in the certificate folder.',
     learned:
@@ -474,7 +474,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Codeforces Specialist',
-    fileUrl: certificateUrls[6],
+    fileUrl: certificateUrls[6].toString(),
     achievement:
       'Reached Specialist rank on Codeforces with a rating of 1448, reflecting consistent competitive programming performance.',
     learned:
@@ -484,7 +484,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Artificial Intelligence Engineer 1',
-    fileUrl: certificateUrls[7],
+    fileUrl: certificateUrls[7].toString(),
     achievement:
     'Completed the Artificial Intelligence Engineer 1 learning path on Coursera, covering foundational AI engineering concepts and skills.',
     learned:
@@ -494,7 +494,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Sprints x Microsoft',
-    fileUrl: certificateUrls[5],
+    fileUrl: certificateUrls[5].toString(),
     achievement:
       'This certificate reflects participation in an industry-linked learning experience connected to Microsoft and Sprints.',
     learned:
@@ -503,7 +503,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'ECPC Qualification - 1st Place',
-    fileUrl: certificateUrls[0],
+    fileUrl: certificateUrls[0].toString(),
     achievement:
       'This certificate reflects strong competitive programming performance and the ability to solve algorithmic problems under pressure.',
     learned:
@@ -512,7 +512,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Zindi Financial Inclusion in Africa Competition',
-    fileUrl: certificateUrls[8],
+    fileUrl: certificateUrls[8].toString(),
     achievement:
       'Ranked 15th on the leaderboard out of over 2,000 participants in a competitive data science challenge focused on financial inclusion in Africa.',
     learned:
@@ -522,7 +522,7 @@ const certificateItems: CertificateItem[] = [
   },  
   {
     title: 'Technical Recognition Certificate',
-    fileUrl: certificateUrls[3],
+    fileUrl: certificateUrls[3].toString(),
     achievement:
       'This certificate marks another formal recognition from the set of achievements in my media folder.',
     learned:
