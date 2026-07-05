@@ -40,6 +40,9 @@ const certificateUrls = [
   new URL('../media/certificates/jJd70oofeOlhQ7.pdf', import.meta.url).href,
   new URL('../media/certificates/lbKJygkFAGjHjz.pdf', import.meta.url).href,
   new URL('../media/certificates/sprintsXmicrosoft.pdf', import.meta.url).href,
+  new URL('../media/certificates/cf.png'),
+  new URL('../media/certificates/ai-engineer-1-badge.png'),
+  new URL('../media/certificates/zindi.jpg')
 ]
 
 // type MediaFrame = {
@@ -471,7 +474,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Codeforces Specialist',
-    fileUrl: '../media/certificates/cf.png',
+    fileUrl: certificateUrls[6],
     achievement:
       'Reached Specialist rank on Codeforces with a rating of 1448, reflecting consistent competitive programming performance.',
     learned:
@@ -481,7 +484,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Artificial Intelligence Engineer 1',
-    fileUrl: '../media/certificates/ai-engineer-1-badge.png',
+    fileUrl: certificateUrls[7],
     achievement:
     'Completed the Artificial Intelligence Engineer 1 learning path on Coursera, covering foundational AI engineering concepts and skills.',
     learned:
@@ -509,7 +512,7 @@ const certificateItems: CertificateItem[] = [
   },
   {
     title: 'Zindi Financial Inclusion in Africa Competition',
-    fileUrl: '../media/certificates/zindi.jpg',
+    fileUrl: certificateUrls[8],
     achievement:
       'Ranked 15th on the leaderboard out of over 2,000 participants in a competitive data science challenge focused on financial inclusion in Africa.',
     learned:
