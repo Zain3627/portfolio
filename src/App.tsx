@@ -40,9 +40,9 @@ const certificateUrls = [
   new URL('../media/certificates/jJd70oofeOlhQ7.pdf', import.meta.url).href,
   new URL('../media/certificates/lbKJygkFAGjHjz.pdf', import.meta.url).href,
   new URL('../media/certificates/sprintsXmicrosoft.pdf', import.meta.url).href,
-  new URL('../media/certificates/cf.png'),
-  new URL('../media/certificates/ai-engineer-1-badge.png'),
-  new URL('../media/certificates/zindi.jpg')
+  new URL('../media/certificates/cf.png', import.meta.url).href,
+  new URL('../media/certificates/ai-engineer-1-badge.png', import.meta.url).href,
+  new URL('../media/certificates/zindi.jpg', import.meta.url).href
 ]
 
 // type MediaFrame = {
