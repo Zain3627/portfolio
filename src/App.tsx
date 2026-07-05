@@ -87,15 +87,15 @@ const homeSkillsFile: string[] = [
   'Bash',
   'Pandas',
   'NumPy',
-//   'scikit-learn',
+  'scikit-learn',
   'Matplotlib',
-//   'Seaborn',
+  'Seaborn',
   'Plotly',
-//   'TensorFlow',
+  'TensorFlow',
   'Keras',
-//   'PyTorch',
-//   'Transformers',
-//   'OpenCV',
+  'PyTorch',
+  'FastAPI',
+  'OpenCV',
   'Azure',
   'AWS',
   'Git',
@@ -106,12 +106,12 @@ const homeSkillsFile: string[] = [
   'MLflow',
   'Docker',
 //   'CI/CD',
-//   'GitHub Actions',
+  'GitHub Actions',
   'Kubernetes',
-//   'Hadoop',
-//   'Arduino',
+  'Apache Hadoop',
+  'Arduino',
 //   'MQTT',
-//   'LaTeX',
+  'LaTeX',
 ]
 
 const homeSkillsName: string[] = [
@@ -124,15 +124,15 @@ const homeSkillsName: string[] = [
   'Bash',
   'Pandas',
   'NumPy',
-//   'scikit-learn',
+  'scikit-learn',
   'Matplotlib',
-//   'Seaborn',
+  'Seaborn',
   'Plotly',
-//   'TensorFlow',
+  'TensorFlow',
   'Keras',
-//   'PyTorch',
-//   'Transformers',
-//   'OpenCV',
+  'PyTorch',
+  'FastAPI',
+  'OpenCV',
   'Azure',
   'AWS',
   'Git',
@@ -143,12 +143,12 @@ const homeSkillsName: string[] = [
   'MLflow',
   'Docker',
 //   'CI/CD',
-//   'GitHub Actions',
+  'GitHub Actions',
   'Kubernetes',
-//   'Hadoop',
-//   'Arduino',
+  'Apache Hadoop',
+  'Arduino',
 //   'MQTT',
-//   'LaTeX',
+  'LaTeX',
 ]
 
 function slugifySkillName(value: string) {
@@ -463,7 +463,7 @@ function SiteLayout({ children }: { children: ReactNode }) {
       <header className="topbar">
         <div>
           <p className="eyebrow">Portfolio</p>
-          <p className="topbar-label">AI Engineer Portfolio</p>
+          <p className="topbar-label">Zain Tamer Zain ElAbdin</p>
         </div>
         <nav className="nav" aria-label="Primary">
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>
@@ -491,7 +491,7 @@ function SiteLayout({ children }: { children: ReactNode }) {
 
       <footer className="site-footer">
         <div>
-          <p className="footer-name">Zain Tamer Zain Elabdin</p>
+          <p className="footer-name">Zain Tamer Zain ElAbdin</p>
           <p className="footer-role">AI Engineer</p>
         </div>
         <div>
@@ -515,24 +515,25 @@ function HomePage() {
         <div className="home-layout">
           <div className="home-hero-grid">
             <article className="home-hero-copy">
-              <p className="hero-kicker">Home</p>
-              <p className="hero-status">Open to work</p>
-              <h2 className="hero-name">Zain Tamer Zain Elabdin</h2>
-              <p className="hero-role">AI Engineer • Machine Learning • Computer Vision • MLOps</p>
+              
+              <h2 className="hero-name">Zain Tamer Zain ElAbdin</h2>
+              <p className="hero-role">AI Engineer & Researcher • ML • NLP • Computer Vision • MLOps</p>
+              
+              <h3>Production-minded AI with strong algorithmic thinking.</h3>
               <p className="hero-summary">
                 I build practical AI systems with a focus on model training, data pipelines, deployment, and clean
                 problem solving. My work combines machine learning, computer vision, cloud deployment, and competitive
-                programming.
+                programming thinking.
               </p>
 
-              <div className="home-usp-card">
-                <p className="card-label">USP</p>
+              {/* <div className="home-usp-card">
                 <h3>Production-minded AI with strong algorithmic thinking.</h3>
                 <p>
-                  I bring together ML engineering, MLOps, and competitive programming discipline to build reliable
-                  systems, not only experiments.
+                  I build practical AI systems with a focus on model training, data pipelines, deployment, and clean
+                problem solving. My work combines machine learning, computer vision, cloud deployment, and competitive
+                programming thinking.
                 </p>
-              </div>
+              </div> */}
 
               <div className="home-education-card">
                 <p className="card-label">Education summary</p>
@@ -540,7 +541,7 @@ function HomePage() {
                   <strong>Arab Academy for Science, Technology & Maritime Transport University</strong>
                 </div>
                 <div className="education-metrics">
-                  <span>CGPA: 3.99/4.0</span>
+                  <span>CGPA: 3.98/4.0</span>
                   <span>Expected graduation: February 2027</span>
                 </div>
               </div>
@@ -557,7 +558,7 @@ function HomePage() {
 
             <aside className="home-hero-side">
               <div className="hero-photo-frame hero-photo-frame--large">
-                <img src={profilePhoto} alt="Zain Tamer Zain Elabdin profile photo" />
+                <img src={profilePhoto} alt="Zain Tamer Zain ElAbdin profile photo" />
               </div>
 
               <div className="home-status-card">
@@ -774,35 +775,86 @@ function CertificatesPage() {
 function ContactPage() {
   return (
     <SiteLayout>
-      <section className="page page--contact">
-        <SectionHeader
-          eyebrow="Contact"
-          title="Reach out through the contact information from my CV."
-          description="This page stays focused on direct contact and profile links only."
-        />
+      <section className="contact-page">
+        <div className="contact-container">
+          <div className="contact-left">
+            <p className="contact-tag">CONTACT</p>
 
-        <div className="contact-grid">
-          <article className="info-card contact-card">
-            <p className="card-label">Direct contact</p>
-            <a href="mailto:zaintamer10@gmail.com">zaintamer10@gmail.com</a>
-            <a href="tel:+201094332424">+20 109 433 2424</a>
-            <p>Alexandria, Egypt</p>
-          </article>
+            <h1>
+              Let's build something <span>awesome.</span>
+            </h1>
 
-          <article className="info-card contact-card">
-            <p className="card-label">Profiles</p>
-            <div className="contact-links">
-              {contactLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
-                  <span>{link.label}</span>
-                  <strong>{link.value}</strong>
-                </a>
-              ))}
+            <p className="contact-description">
+              Whether you have a project, a job opportunity, or just want to
+              connect, I'd love to hear from you.
+            </p>
+
+            <div className="contact-info">
+              <a
+                href="mailto:zaintamer10@gmail.com"
+                className="contact-item"
+              >
+                <div className="icon">📧</div>
+
+                <div>
+                  <small>Email</small>
+                  <strong>zaintamer10@gmail.com</strong>
+                </div>
+              </a>
+
+              <a href="tel:+201094332424" className="contact-item">
+                <div className="icon">📞</div>
+
+                <div>
+                  <small>Phone</small>
+                  <strong>+20 109 433 2424</strong>
+                </div>
+              </a>
+
+              <div className="contact-item">
+                <div className="icon">📍</div>
+
+                <div>
+                  <small>Location</small>
+                  <strong>Alexandria, Egypt</strong>
+                </div>
+              </div>
             </div>
-            <a className="button button--primary" href={cvUrl} target="_blank" rel="noreferrer">
-              Download CV
-            </a>
-          </article>
+          </div>
+
+          <div className="contact-right">
+            <div className="contact-card">
+              <h2>Find me online</h2>
+
+              <div className="profile-links">
+                {contactLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="profile-link"
+                  >
+                    <div>
+                      <span>{link.label}</span>
+                      <strong>{link.value}</strong>
+                    </div>
+
+                    <span className="arrow">↗</span>
+                  </a>
+                ))}
+              </div>
+
+              <a
+                className="download-cv"
+                href={cvUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                ⬇ Download CV
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </SiteLayout>
