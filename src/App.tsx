@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
-
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-
+import { useState, useEffect } from "react"
+import { NavLink, Navigate, Route, Routes, useNavigate, useParams, Link } from 'react-router-dom'
 import './App.css'
 
 import bankLogin from '../media/java_banking_system/login_page.jpg'
@@ -25,6 +24,8 @@ import plPredictionPage from '../media/pl_predictor/prediction_page.jpg'
 import awsCloudClubImage from '../media/aws-cloud-club-core-team.png'
 import cpclogo from '../media/cpc-club.png'
 import profilePhoto from '../media/profile.jpg'
+import gharbiyaLogo from '../media/gharbiya-logo.png'
+import aastmtLogo from '../media/aastmt-logo.png'
 
 const cvUrl = new URL('../media/full_CV.pdf', import.meta.url).href
 const skillIconSources = import.meta.glob('../media/skills/*.{svg,png,jpg,jpeg,webp}', {
@@ -41,20 +42,29 @@ const certificateUrls = [
   new URL('../media/certificates/sprintsXmicrosoft.pdf', import.meta.url).href,
 ]
 
-type MediaFrame = {
+// type MediaFrame = {
+//   src: string
+//   label: string
+// }
+
+interface ProjectMedia {
   src: string
   label: string
 }
 
-type Project = {
+interface Project {
   title: string
   subtitle: string
   summary: string
   technologies: string[]
   whatIDid: string[]
   impact: string[]
-  media?: MediaFrame[]
+  media?: ProjectMedia[]
   note?: string
+  date?: string          // optional — add later if you want it shown
+  problem?: string       // optional — add later if you want it shown
+  whatILearned?: string[] // optional — add later if you want it shown
+  github?: string  
 }
 
 type ResearchItem = {
@@ -69,6 +79,8 @@ type CertificateItem = {
   fileUrl: string
   achievement: string
   learned: string
+  fileType?: 'pdf' | 'image' // defaults to 'pdf' if omitted
+  date: string
 }
 
 type SkillItem = {
@@ -210,6 +222,8 @@ const projects: Project[] = [
       { src: plPipelines3, label: 'Retraining and evaluation path' },
       { src: plPredictionPage, label: 'Fixture prediction dashboard' },
     ],
+    github: 'https://github.com/Zain3627/pl_predictor',
+    date: '2026'
   },
   {
     title: 'FPL Vision',
@@ -232,6 +246,8 @@ const projects: Project[] = [
       { src: fplPoints, label: 'Expected points prediction view' },
       { src: fplStats, label: 'Player statistics preview' },
     ],
+    github: 'https://github.com/Zain3627/Fantasy_Premier_League_Predictor',
+    date: '2026'
   },
   {
     title: 'Facial Recognition System',
@@ -253,6 +269,45 @@ const projects: Project[] = [
       { src: faceRegister, label: 'User registration page' },
       { src: faceTest, label: 'Recognition test screen' },
     ],
+    github: 'https://github.com/Zain3627/Facial-Recognition-System',
+    date: '2025'
+  },
+  {
+    title: 'WHO COVID-19 Global Daily Data Analysis',
+    subtitle: 'Data Exploration and Visualization',
+    summary:
+      'Performed exploratory analysis on more than 250,000 daily records across 200+ countries and regions to uncover public-health trends.',
+    technologies: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly'],
+    whatIDid: [
+      'Cleaned and transformed a large public dataset into analysis-ready tables.',
+      'Used statistical plots and feature engineering to surface trends across countries and regions.',
+      'Focused on storytelling through data and analysis quality.',
+    ],
+    impact: [
+      'Highlights research-style analysis and visual communication skills.',
+      'Demonstrates disciplined work with large real-world datasets.',
+    ],
+    note: 'No project media is stored in the repo for this analysis.',
+    github: 'https://github.com/Zain3627/WHO-COVID-19-global-daily-data-analysis-project',
+    date: '2025'
+  },
+  {
+    title: 'Autonomous Point-to-Point Smart Car',
+    subtitle: 'Embedded Systems and Voice Control',
+    summary:
+      'Developed an autonomous ground vehicle that navigates to user-specified coordinates using onboard localization and motion control.',
+    technologies: ['Arduino', 'MQTT', 'IMU Localization', 'Voice Recognition'],
+    whatIDid: [
+      'Integrated wireless command input and voice-based target control.',
+      'Connected motion logic to sensor-driven localization.',
+      'Built the control loop around embedded communication and navigation.',
+    ],
+    impact: [
+      'Shows embedded systems thinking, autonomy, and control integration.',
+      'Adds breadth beyond software-only projects.',
+    ],
+    note: 'No project media is stored in the repo for this hardware project.',
+    date: '2025'
   },
   {
     title: 'LAN Chat Room',
@@ -276,6 +331,8 @@ const projects: Project[] = [
       { src: chatShareMedia, label: 'Media sharing screen' },
       { src: chatUsersJoining, label: 'Users joining the room' },
     ],
+    github: 'https://github.com/Zain3627/Chatroom',
+    date: '2024'
   },
   {
     title: 'Java Banking System',
@@ -296,40 +353,83 @@ const projects: Project[] = [
       { src: bankLogin, label: 'Login page' },
       { src: bankOperations, label: 'Banking operations screen' },
     ],
+    github: 'https://github.com/Zain3627/Banking-System-Java-Project',
+    date: '2024'
+  },
+]
+interface EducationEntry {
+  institution: string
+  degree: string
+  start: string
+  end: string
+  description: string
+  logo: string
+  coursework?: string[]
+  transcriptUrl?: string
+}
+
+interface VolunteerEntry {
+  organization: string
+  role: string
+  start: string
+  end: string
+  description: string
+  logo: string
+}
+
+
+const educationTimeline: EducationEntry[] = [
+  {
+    institution: "Gharbiya STEM High School",
+    degree: "STEM High School Diploma",
+    start: "Sep 2019",
+    end: "Jul 2022",
+    description:
+      "A boarding school experience that pushed me to grow well beyond academics — living away from home built independence, discipline, and teamwork skills I still rely on today. Graduated 2nd in my school and ranked 34th nationally in my senior year.",
+    logo: gharbiyaLogo,
   },
   {
-    title: 'WHO COVID-19 Global Daily Data Analysis',
-    subtitle: 'Data Exploration and Visualization',
-    summary:
-      'Performed exploratory analysis on more than 250,000 daily records across 200+ countries and regions to uncover public-health trends.',
-    technologies: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly'],
-    whatIDid: [
-      'Cleaned and transformed a large public dataset into analysis-ready tables.',
-      'Used statistical plots and feature engineering to surface trends across countries and regions.',
-      'Focused on storytelling through data and analysis quality.',
+    institution: "Arab Academy for Science, Technology & Maritime Transport (AASTMT)",
+    degree: "Bachelor of Science in Computer Engineering ",
+    start: "Sep 2022",
+    end: "Present",
+    description: "Currently ranked 2nd in my class.",
+    logo: aastmtLogo,
+    coursework: [
+      "Discrete Mathematics",
+      "Probability \& Statistical Analysis",
+      "Artificial Intelligence",
+      "Data Analytics and Optimization",
+      "Database Systems",
+      "Computing Algorithms",
+      "Object-Oriented Programming",
+      "Data Structure \& Algorithms",
+      "Distributed and Parallel Systems",
+      "Embedded Systems Design",
+      "Cyber Security",
+      "Intro to Intelligent Human Computer Interaction"
     ],
-    impact: [
-      'Highlights research-style analysis and visual communication skills.',
-      'Demonstrates disciplined work with large real-world datasets.',
-    ],
-    note: 'No project media is stored in the repo for this analysis.',
+    transcriptUrl: "../media/transcript.pdf",
+  },
+]
+const volunteerExperiences: VolunteerEntry[] = [
+  {
+    organization: "AWS Cloud Club",
+    role: "Core Team Member",
+    start: "Mar 2026",
+    end: "Present",
+    description:
+      "Preparing and delivering workshops and sessions on AWS Cloud Practitioner topics, helping members build a solid foundation in core cloud concepts.",
+    logo: awsCloudClubImage,
   },
   {
-    title: 'Autonomous Point-to-Point Smart Car',
-    subtitle: 'Embedded Systems and Voice Control',
-    summary:
-      'Developed an autonomous ground vehicle that navigates to user-specified coordinates using onboard localization and motion control.',
-    technologies: ['Arduino', 'MQTT', 'IMU Localization', 'Voice Recognition'],
-    whatIDid: [
-      'Integrated wireless command input and voice-based target control.',
-      'Connected motion logic to sensor-driven localization.',
-      'Built the control loop around embedded communication and navigation.',
-    ],
-    impact: [
-      'Shows embedded systems thinking, autonomy, and control integration.',
-      'Adds breadth beyond software-only projects.',
-    ],
-    note: 'No project media is stored in the repo for this hardware project.',
+    organization: "Competitive Programming Club",
+    role: "CP Coach",
+    start: "Sep 2025",
+    end: "Present",
+    description:
+      "Leading competitive programming sessions on algorithms and problem-solving, along with tutoring, upsolving sessions, and contests to help members sharpen their skills.",
+    logo: cpclogo,
   },
 ]
 
@@ -352,12 +452,13 @@ const researchItems: ResearchItem[] = [
 
 const certificateItems: CertificateItem[] = [
   {
-    title: 'ECPC Qualification - 1st Place',
-    fileUrl: certificateUrls[0],
+    title: 'Personal Achievement Certificate',
+    fileUrl: certificateUrls[2],
     achievement:
-      'This certificate reflects strong competitive programming performance and the ability to solve algorithmic problems under pressure.',
+      'This certificate shows continued progress and effort in the areas where I keep building my portfolio and technical profile.',
     learned:
-      'It strengthened my speed, correctness under constraints, and my habit of breaking complex problems into precise steps.',
+      'It reminded me to keep improving through practice, feedback, and project-based learning.',
+    date: 'Apr 2026',
   },
   {
     title: 'Certificate of Achievement',
@@ -366,30 +467,27 @@ const certificateItems: CertificateItem[] = [
       'This recognition represents a formal milestone from my academic and technical journey as documented in the certificate folder.',
     learned:
       'It reinforced consistency, discipline, and the value of building a strong technical base over time.',
+    date: 'Dec 2025',
   },
   {
-    title: 'Personal Achievement Certificate',
-    fileUrl: certificateUrls[2],
+    title: 'Codeforces Specialist',
+    fileUrl: '../media/certificates/cf.png',
     achievement:
-      'This certificate shows continued progress and effort in the areas where I keep building my portfolio and technical profile.',
+      'Reached Specialist rank on Codeforces with a rating of 1448, reflecting consistent competitive programming performance.',
     learned:
-      'It reminded me to keep improving through practice, feedback, and project-based learning.',
+      'It reinforced steady, deliberate practice in algorithms and problem-solving, and showed measurable progress from sustained effort over time.',
+    fileType: 'image',
+    date: 'Nov 2025',
   },
   {
-    title: 'Technical Recognition Certificate',
-    fileUrl: certificateUrls[3],
+    title: 'Artificial Intelligence Engineer 1',
+    fileUrl: '../media/certificates/ai-engineer-1-badge.png',
     achievement:
-      'This certificate marks another formal recognition from the set of achievements in my media folder.',
+    'Completed the Artificial Intelligence Engineer 1 learning path on Coursera, covering foundational AI engineering concepts and skills.',
     learned:
-      'It strengthened my focus on showing measurable outcomes and not only completed work.',
-  },
-  {
-    title: 'Technical Recognition Certificate',
-    fileUrl: certificateUrls[4],
-    achievement:
-      'This certificate adds to the record of technical recognition and shows consistency across my journey.',
-    learned:
-      'It taught me to treat every learning milestone as part of a longer path of growth.',
+    'It gave me a structured grounding in core AI engineering practices and reinforced concepts I could apply directly to my own projects.',
+    fileType: 'image',
+    date: 'Oct 2025',
   },
   {
     title: 'Sprints x Microsoft',
@@ -398,33 +496,45 @@ const certificateItems: CertificateItem[] = [
       'This certificate reflects participation in an industry-linked learning experience connected to Microsoft and Sprints.',
     learned:
       'It helped me connect classroom learning with practical engineering skills and professional development.',
+    date: 'Oct 2025',
   },
+  {
+    title: 'ECPC Qualification - 1st Place',
+    fileUrl: certificateUrls[0],
+    achievement:
+      'This certificate reflects strong competitive programming performance and the ability to solve algorithmic problems under pressure.',
+    learned:
+      'It strengthened my speed, correctness under constraints, and my habit of breaking complex problems into precise steps.',
+    date: 'Jul 2025',
+  },
+  {
+    title: 'Zindi Financial Inclusion in Africa Competition',
+    fileUrl: '../media/certificates/zindi.jpg',
+    achievement:
+      'Ranked 15th on the leaderboard out of over 2,000 participants in a competitive data science challenge focused on financial inclusion in Africa.',
+    learned:
+      'It sharpened my ability to approach a real-world dataset end-to-end — from feature engineering to model tuning — while competing against a large, skilled field.',
+    fileType: 'image',
+    date: 'Jun 2025',
+  },  
+  {
+    title: 'Technical Recognition Certificate',
+    fileUrl: certificateUrls[3],
+    achievement:
+      'This certificate marks another formal recognition from the set of achievements in my media folder.',
+    learned:
+      'It strengthened my focus on showing measurable outcomes and not only completed work.',
+    date: 'Oct 2024',
+  }
 ]
 
-const aboutCards = [
-  {
-    title: 'Education',
-    body:
-      'I study Computer Engineering at the Arab Academy for Science, Technology & Maritime Transport University, with a 3.99/4.0 CGPA and coursework across AI, algorithms, databases, distributed systems, embedded systems, cybersecurity, and HCI.',
-  },
-  {
-    title: 'Volunteering',
-    body:
-      'I have supported the AWS Student Builder Group at AAST and coached students in the AAST Competitive Programming Club. I value teaching, mentoring, and helping others grow in technical spaces.',
-  },
-  {
-    title: 'Passion for helping others',
-    body:
-      'I enjoy making technical ideas understandable and useful for other people. Whether through workshops, tutoring, or collaborative project work, I like helping others gain confidence and practical skill.',
-  },
-]
 
 const contactLinks = [
-  {
-    label: 'Email',
-    value: 'zaintamer10@gmail.com',
-    href: 'mailto:zaintamer10@gmail.com',
-  },
+  // {
+  //   label: 'Email',
+  //   value: 'zaintamer10@gmail.com',
+  //   href: 'mailto:zaintamer10@gmail.com',
+  // },
   {
     label: 'LinkedIn',
     value: 'linkedin.com/in/zaintamer',
@@ -573,90 +683,229 @@ function HomePage() {
           </div>
 
           <section className="skills-marquee" aria-label="Skills moving bar">
-            <div className="skills-marquee__track">
-              {marqueeSkills.map((skill, index) => (
-                <div key={`${skill.slug}-${index}`} className="skills-pill">
-                  <span className="skills-pill__icon" aria-hidden="true">
-                    {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
-                  </span>
-                  <span>{skill.name}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+  <div className="skills-marquee__track">
+    {marqueeSkills.map((skill, index) => (
+      <div key={`${skill.slug}-${index}`} className="skills-pill">
+        <span className="skills-pill__icon" aria-hidden="true">
+          {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
+        </span>
+        <span>{skill.name}</span>
+      </div>
+    ))}
+    {marqueeSkills.map((skill, index) => (
+      <div key={`${skill.slug}-dup-${index}`} className="skills-pill" aria-hidden="true">
+        <span className="skills-pill__icon" aria-hidden="true">
+          {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
+        </span>
+        <span>{skill.name}</span>
+      </div>
+    ))}
+  </div>
+</section>
         </div>
       </section>
     </SiteLayout>
   )
 }
 
+function slugify(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
 function ProjectsPage() {
+  const navigate = useNavigate()
   return (
     <SiteLayout>
       <section className="page page--projects">
         <SectionHeader
           eyebrow="Projects"
-          title="Detailed projects with technologies, responsibilities, and media."
-          description="Each project has its own detailed view so the page can stand alone on the tab."
+          title="A quick look at what I've built."
+          description="Click any project to see the full story — the problem, how it was built, and what came out of it."
         />
-
-        <div className="project-stack">
-          {projects.map((project) => (
-            <article key={project.title} className="project-card">
-              <div className="project-intro">
-                <div>
-                  <p className="card-label">{project.subtitle}</p>
-                  <h3>{project.title}</h3>
-                </div>
-                <p>{project.summary}</p>
-              </div>
-
-              <div className="project-details-grid">
-                <div className="project-detail-box">
-                  <h4>Technologies</h4>
+        <div className="project-grid">
+          {projects.map((project) => {
+            const slug = slugify(project.title)
+            return (
+              <article
+                key={slug}
+                className="project-card project-card--compact"
+                onClick={() => navigate(`/projects/${slug}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") navigate(`/projects/${slug}`)
+                }}
+              >
+                {project.media?.[0] && (
+                  <div className="project-card-media">
+                    <img
+                      src={project.media[0].src}
+                      alt={`${project.title} cover`}
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <div className="project-card-body">
+                  <div className="project-card-heading">
+                    <h3>{project.title}</h3>
+                    {project.date && <span className="project-card-date">{project.date}</span>}
+                  </div>
+                  <p className="project-card-summary">{project.summary}</p>
                   <ul className="chip-row">
-                    {project.technologies.map((item) => (
+                    {project.technologies.slice(0, 4).map((item) => (
                       <li key={item} className="chip">
                         {item}
                       </li>
                     ))}
+                    {project.technologies.length > 4 && (
+                      <li className="chip chip--muted">
+                        +{project.technologies.length - 4}
+                      </li>
+                    )}
                   </ul>
+                  {project.github && (
+                    
+                      <a href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="github-button"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      View on GitHub ↗
+                    </a>
+                  )}
                 </div>
-
-                <div className="project-detail-box">
-                  <h4>What I did</h4>
-                  <ul className="bullet-list">
-                    {project.whatIDid.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="project-detail-box">
-                  <h4>Impact</h4>
-                  <ul className="bullet-list">
-                    {project.impact.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {project.media ? (
-                <div className="media-grid">
-                  {project.media.map((media) => (
-                    <figure key={media.label} className="media-card">
-                      <img src={media.src} alt={`${project.title} - ${media.label}`} />
-                      <figcaption>{media.label}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-              ) : (
-                <p className="project-note">{project.note}</p>
-              )}
-            </article>
-          ))}
+              </article>
+            )
+          })}
         </div>
+      </section>
+    </SiteLayout>
+  )
+}
+
+function ProjectDetailPage() {
+  const { slug } = useParams<{ slug: string }>()
+  const project = projects.find((p) => slugify(p.title) === slug)
+  const [lightboxImage, setLightboxImage] = useState<ProjectMedia | null>(null)
+
+  // Close on Escape key
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxImage(null)
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  if (!project) {
+    return <Navigate to="/projects" replace />
+  }
+
+  return (
+    <SiteLayout>
+      <section className="page page--project-detail">
+        <Link to="/projects" className="back-link">
+          ← All projects
+        </Link>
+
+        <header className="project-detail-header">
+          <p className="card-label">{project.subtitle}</p>
+          <h1>{project.title}</h1>
+          {project.date && <p className="project-detail-date">{project.date}</p>}
+          <p className="project-detail-summary">{project.summary}</p>
+        </header>
+
+        {project.media && project.media.length > 0 && (
+          <div className="media-grid">
+            {project.media.map((media) => (
+              <figure
+                key={media.label}
+                className="media-card media-card--clickable"
+                onClick={() => setLightboxImage(media)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") setLightboxImage(media)
+                }}
+              >
+                <img src={media.src} alt={`${project.title} - ${media.label}`} />
+                <figcaption>{media.label}</figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
+
+        <div className="project-detail-grid">
+          <div className="project-detail-box">
+            <h4>Technologies</h4>
+            <ul className="chip-row">
+              {project.technologies.map((item) => (
+                <li key={item} className="chip">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {project.problem && (
+            <div className="project-detail-box">
+              <h4>The problem</h4>
+              <p>{project.problem}</p>
+            </div>
+          )}
+
+          <div className="project-detail-box">
+            <h4>How it was built</h4>
+            <ul className="bullet-list">
+              {project.whatIDid.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="project-detail-box">
+            <h4>Impact</h4>
+            <ul className="bullet-list">
+              {project.impact.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          {project.whatILearned && (
+            <div className="project-detail-box">
+              <h4>What I learned</h4>
+              <ul className="bullet-list">
+                {project.whatILearned.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {lightboxImage && (
+          <div className="lightbox-overlay" onClick={() => setLightboxImage(null)}>
+            <button
+              className="lightbox-close"
+              onClick={() => setLightboxImage(null)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <img
+              src={lightboxImage.src}
+              alt={lightboxImage.label}
+              className="lightbox-image"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <p className="lightbox-caption">{lightboxImage.label}</p>
+          </div>
+        )}
       </section>
     </SiteLayout>
   )
@@ -702,33 +951,79 @@ function AboutPage() {
       <section className="page page--about">
         <SectionHeader
           eyebrow="About"
-          title="Education, volunteering, and the reason I enjoy helping others."
-          description="This page focuses on academic background, community involvement, and personal motivation."
+          title=""
+          description=''
         />
+        <h1 className="hero-name"> Zain Tamer Zain ElAbdin </h1>
 
-        <div className="about-grid">
-          {aboutCards.map((item) => (
-            <article key={item.title} className="info-card">
-              <p className="card-label">{item.title}</p>
-              <p>{item.body}</p>
-            </article>
-          ))}
 
-          <article className="info-card about-visual">
-            <img src={awsCloudClubImage} alt="AWS Cloud Club core team" />
-            <p>
-              I also enjoy being part of technical communities where learning is shared, workshops are organized, and
-              people help each other improve.
-            </p>
-          </article>
+        <div className="about-intro">
+          <p>
+            Computer Engineering student at AAST specializing in machine learning, computer vision, and MLOps — with hands-on experience shipping production AI systems on AWS and Azure. Years of competitive programming shaped an algorithmic rigor that runs through every architecture and system design decision. Equally invested in people as in code: teaching, mentoring, and building as part of a team matter as much as the technical craft itself. Current research interests center on large language models and NLP — specifically how these systems can be grounded, adapted, and deployed reliably in production.
+          </p>
+        </div>
 
-          <article className="info-card about-visual">
-            <img src={cpclogo} alt="AWS Cloud Club core team" />
-            <p>
-              I also enjoy being part of technical communities where learning is shared, workshops are organized, and
-              people help each other improve.
-            </p>
-          </article>
+        <div className="about-section">
+          <h2 className="about-section-title">Education</h2>
+          <div className="timeline">
+            {educationTimeline.map((entry) => (
+              <div key={entry.institution} className="timeline-item">
+                <div className="timeline-marker">
+                  <img src={entry.logo} alt={`${entry.institution} logo`} />
+                </div>
+                <div className="timeline-content">
+                  <p className="timeline-date">
+                    {entry.start} — {entry.end}
+                  </p>
+                  <h3>{entry.institution}</h3>
+                  <p className="timeline-degree">{entry.degree}</p>
+                  <p>{entry.description}</p>
+
+                  {entry.coursework && entry.coursework.length > 0 && (
+                    <div className="timeline-coursework">
+                      <p className="timeline-coursework-label">Relevant coursework</p>
+                      <ul className="chip-row">
+                        {entry.coursework.map((course) => (
+                          <li key={course} className="chip">
+                            {course}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {entry.transcriptUrl && (
+                    
+                      <a href={entry.transcriptUrl}
+                      download
+                      className="github-button"
+                    >
+                      Download unofficial transcript ↓
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="about-section">
+          <h2 className="about-section-title">Volunteering</h2>
+          <div className="volunteer-grid">
+            {volunteerExperiences.map((entry, index) => (
+              <article key={`${entry.organization}-${index}`} className="volunteer-card">
+                <div className="volunteer-card-logo">
+                  <img src={entry.logo} alt={`${entry.organization} logo`} />
+                </div>
+                <p className="timeline-date">
+                  {entry.start} — {entry.end}
+                </p>
+                <h3>{entry.organization}</h3>
+                <p className="volunteer-role">{entry.role}</p>
+                <p>{entry.description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </SiteLayout>
@@ -744,16 +1039,20 @@ function CertificatesPage() {
           title="Certificates with achievement context and learning takeaways."
           description="Each certificate is shown with the corresponding file from the media folder, plus what the achievement meant and what I learned from it."
         />
-
         <div className="certificate-grid">
           {certificateItems.map((certificate) => (
             <article key={certificate.title} className="certificate-card">
               <div className="certificate-preview">
-                <iframe title={certificate.title} src={certificate.fileUrl} />
+                {certificate.fileType === 'image' ? (
+                  <img src={certificate.fileUrl} alt={certificate.title} />
+                ) : (
+                  <iframe title={certificate.title} src={certificate.fileUrl} />
+                )}
               </div>
               <div className="certificate-content">
                 <p className="card-label">Certificate</p>
                 <h3>{certificate.title}</h3>
+                <p className="certificate-date">{certificate.date}</p>
                 <p>
                   <strong>Achievement:</strong> {certificate.achievement}
                 </p>
@@ -866,6 +1165,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/projects" element={<ProjectsPage />} />
+      <Route path="/projects/:slug" element={<ProjectDetailPage />} />
       <Route path="/research" element={<ResearchPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/certificates" element={<CertificatesPage />} />
