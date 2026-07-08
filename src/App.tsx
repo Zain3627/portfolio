@@ -75,7 +75,9 @@ type ResearchItem = {
   title: string
   date: string
   summary: string
+  contributions: string[]
   skills: string[]
+  github?: string
 }
 
 type CertificateItem = {
@@ -209,12 +211,12 @@ const projects: Project[] = [
     title: 'Premier League Predictor',
     subtitle: 'End-to-End MLOps System',
     summary:
-      'Built a complete pipeline to fetch football data, train an XGBoost classifier, generate fixture predictions, and project the league table in a Streamlit dashboard.',
-    technologies: ['ZenML', 'XGBoost', 'MLflow', 'Supabase', 'AWS S3', 'Docker', 'AWS EC2', 'cron'],
+      'Built a complete pipeline to fetch football data, train a model classifier, generate fixture predictions, and project the league table in a Streamlit dashboard with a scheduled jobs to evaluate the model performance.',
+    technologies: ['ZenML', 'MLflow', 'Supabase', 'SQL','ETL pipeline', 'AWS S3', 'Docker', 'AWS EC2', 'AWS ECR', 'cron'],
     whatIDid: [
       'Designed the ingestion, training, evaluation, and deployment flow as a reproducible pipeline.',
       'Used MLflow for experiment tracking, model registry, and champion model promotion.',
-      'Stored intermediate datasets in Supabase PostgreSQL so execution stayed decoupled and maintainable.',
+      'Stored intermediate datasets in Supabase PostgreSQL so execution stayed decoupled and maintainable.', 'Containerised the system with Docker, deployed to AWS EC2 via AWS ECR.', 'Scheduled weekly automated evaluation via cron — triggering a full retraining pipeline when live prediction accuracy dropped below threshold.'
     ],
     impact: [
       'Deployed on AWS EC2 with Docker and automated weekly re-training checks.',
@@ -234,10 +236,11 @@ const projects: Project[] = [
     subtitle: 'AI-Powered Fantasy Premier League Assistant',
     summary:
       'Created a web assistant for Fantasy Premier League managers that produces player recommendations and expected points projections from a trained model.',
-    technologies: ['Python', 'XGBoost', 'Streamlit', 'Azure App Service', 'Azure Blob Storage', 'GitHub Actions'],
+    technologies: ['Python', 'XGBoost', 'Streamlit', 'Azure App Service', 'Azure Blob Storage', 'GitHub Actions', 'Docker', 'SQL'],
     whatIDid: [
       'Aggregated and engineered features from the FPL REST API across 700+ players and 20 teams.',
-      'Built a dashboard that combines predictions with live player and team statistics.',
+      'Trained a model that predicts each player projected points, stored projected points using postgres server while updating the predicted points each gameweek',
+      'Built a dashboard using Streamlit that combines predictions with live player and team statistics and hosted it in a container using Azure App Service.',
       'Automated deployment and updates using GitHub Actions.',
     ],
     impact: [
@@ -258,7 +261,7 @@ const projects: Project[] = [
     subtitle: 'Real-Time Identity Enrollment',
     summary:
       'Implemented a real-time facial recognition pipeline using a FaceNet backbone, a fine-tuned classification head, and a user enrollment workflow.',
-    technologies: ['FaceNet', 'MediaPipe', 'Cosine Similarity', 'Docker', 'Hugging Face Spaces'],
+    technologies: ['FaceNet', 'MediaPipe', 'Cosine Similarity', 'Docker', 'Hugging Face Spaces','Vector Embeddings'],
     whatIDid: [
       'Trained and evaluated the model on the LFW dataset to reach high recognition accuracy.',
       'Built multi-face detection and 128-dimensional embedding matching for real-time use.',
@@ -281,7 +284,7 @@ const projects: Project[] = [
     subtitle: 'Data Exploration and Visualization',
     summary:
       'Performed exploratory analysis on more than 250,000 daily records across 200+ countries and regions to uncover public-health trends.',
-    technologies: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly'],
+    technologies: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly', 'EDA', 'Feature Engineering'],
     whatIDid: [
       'Cleaned and transformed a large public dataset into analysis-ready tables.',
       'Used statistical plots and feature engineering to surface trends across countries and regions.',
@@ -342,8 +345,8 @@ const projects: Project[] = [
     title: 'Java Banking System',
     subtitle: 'Desktop Banking Workflow',
     summary:
-      'Built a banking interface focused on secure login and basic banking operations, emphasizing clear user flow and transaction handling.',
-    technologies: ['Java', 'Desktop UI', 'OOP', 'Workflow Design'],
+      'Built a banking interface focused on secure login and basic banking operations using OOP principles and design patterns, emphasizing clear user flow and transaction handling.',
+    technologies: ['Java', 'JavaFX', 'Desktop UI', 'OOP', 'Workflow Design'],
     whatIDid: [
       'Separated authentication from the post-login banking workflow.',
       'Designed the interface to keep common banking actions easy to follow.',
@@ -361,6 +364,7 @@ const projects: Project[] = [
     date: '2024'
   },
 ]
+
 interface EducationEntry {
   institution: string
   degree: string
@@ -452,21 +456,92 @@ const volunteerExperiences: VolunteerEntry[] = [
   },
 ]
 
-const researchItems: ResearchItem[] = [
+export const researchItems: ResearchItem[] = [
   {
-    title: 'An Experimental Analysis of Data Augmentation and Hyperparameter Tuning for Image Classification',
-    date: 'Oct 2025 - Dec 2025',
+    title:
+      "AI Research Notes & Paper Reproductions",
+
+    date: "Ongoing",
+
     summary:
-      'Studied how different augmentation strategies and tuning choices affect model performance across multiple deep learning architectures.',
-    skills: ['Experimental design', 'Model comparison', 'Training analysis', 'Image classification'],
+      "A continuously growing collection of structured analyses of influential AI papers spanning machine learning, deep learning, NLP, computer vision, LLMs, and related fields. The repository documents methodologies, key findings, limitations, and implementation insights, with selected papers reproduced to validate experimental results and deepen understanding.",
+
+    contributions: [
+      "Summarized research papers across multiple AI domains using a consistent analytical framework.",
+      "Documented methodologies, experimental setups, strengths, limitations, and future research directions.",
+      "Maintained organized notes to build a long-term AI research knowledge base.",
+      "Reproduced selected papers to verify published results and understand implementation details."
+    ],
+
+    skills: [
+      "Research Analysis",
+      "Paper Reproduction",
+      "Literature Review",
+      "Scientific Writing",
+      "Experimental Design",
+      "Machine Learning"
+    ],
+
+    github:
+      "https://github.com/Zain3627/ai-research-summary"
   },
+
   {
-    title: 'Comparison of Quicksort and BFPRT Algorithms for the K-th Element Selection Problem',
-    date: 'Feb 2025',
+    title:
+      "An Experimental Analysis of Data Augmentation and Hyperparameter Tuning for Image Classification",
+
+    date: "Oct 2025 – Dec 2025",
+
     summary:
-      'Compared different solutions to the selection problem and measured how input size changes their runtime behavior.',
-    skills: ['Algorithm analysis', 'Complexity reasoning', 'Benchmarking', 'Selection problems'],
+      "Conducted an empirical study investigating how different data augmentation techniques and hyperparameter optimization strategies affect image classification performance across multiple deep learning architectures.",
+
+    contributions: [
+      "Designed controlled experiments to isolate the effect of augmentation techniques.",
+      "Compared multiple CNN architectures under identical training conditions.",
+      "Evaluated models using accuracy, convergence behavior, and generalization performance.",
+      "Documented experimental findings through quantitative analysis and visualizations."
+    ],
+
+    skills: [
+      "PyTorch",
+      "Computer Vision",
+      "Image Classification",
+      "Hyperparameter Tuning",
+      "Experimental Design",
+      "Model Evaluation"
+    ],
+
+    github:
+      "https://github.com/Zain3627/An-Experimental-Analysis-of-Data-Augmentation-and-Hyperparameter-Tuning-for-Image-Classification"
   },
+
+  {
+    title:
+      "Experimental Comparison of Quicksort and BFPRT for K-th Element Selection",
+
+    date: "Feb 2025",
+
+    summary:
+      "Implemented and benchmarked deterministic and randomized selection algorithms to compare their theoretical complexity with empirical runtime behavior across varying input sizes.",
+
+    contributions: [
+      "Implemented Quicksort-based and BFPRT selection algorithms from scratch.",
+      "Designed benchmarking experiments using multiple dataset sizes.",
+      "Compared observed runtime against theoretical complexity.",
+      "Analyzed algorithmic trade-offs through empirical performance evaluation."
+    ],
+
+    skills: [
+      "Algorithms",
+      "Benchmarking",
+      "Complexity Analysis",
+      "Performance Evaluation",
+      "Experimental Design"
+    ],
+
+    github:
+      "https://github.com/Zain3627/quicksort-bfprt-kth-selection-analysis"
+  }
 ]
 
 const certificateItems: CertificateItem[] = [
@@ -755,8 +830,8 @@ function ProjectsPage() {
       <section className="page page--projects">
         <SectionHeader
           eyebrow="Projects"
-          title="A quick look at what I've built."
-          description="Click any project to see the full story — the problem, how it was built, and what came out of it."
+          title="Featured Projects"
+          description="A selection of projects highlighting my work in AI, machine learning, cloud computing, and software engineering, with an emphasis on real-world applications and production-ready solutions. Click any project to see the full story — the problem, how it was built, and what came out of it."
         />
         <div className="project-grid">
           {projects.map((project) => {
@@ -950,8 +1025,8 @@ function ResearchPage() {
       <section className="page page--research">
         <SectionHeader
           eyebrow="Research"
-          title="Clean, focused research work that shows experimental thinking."
-          description="This page stays simple and demonstrates analysis, comparison, and methodological thinking."
+          title="Research Projects & Technical Investigations"
+          description="I enjoy understanding why models work—not just how to use them. My work focuses on reproducing published research, designing controlled experiments, and evaluating machine learning systems through empirical analysis."
         />
 
         <div className="research-stack">
@@ -959,17 +1034,60 @@ function ResearchPage() {
             <article key={item.title} className="info-card info-card--research">
               <div className="project-meta">
                 <span>{item.date}</span>
-                <span>Research</span>
+                <span>Research Project</span>
               </div>
+
               <h3>{item.title}</h3>
+
               <p>{item.summary}</p>
-              <ul className="chip-row">
-                {item.skills.map((skill) => (
-                  <li key={skill} className="chip chip--soft">
-                    {skill}
-                  </li>
-                ))}
-              </ul>
+
+              {item.contributions && item.contributions.length > 0 && (
+                <div className="research-contributions">
+                  <h4 className="research-subtitle">
+                    Key Contributions
+                  </h4>
+
+                  <ul className="takeaway-list">
+                    {item.contributions.map((contribution) => (
+                      <li
+                        key={contribution}
+                        className="takeaway-item"
+                      >
+                        <span className="takeaway-icon">✓</span>
+                        <span>{contribution}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="timeline-coursework">
+                <p className="timeline-coursework-label">
+                  Technologies & Skills
+                </p>
+
+                <ul className="chip-row">
+                  {item.skills.map((skill) => (
+                    <li
+                      key={skill}
+                      className="chip chip--soft"
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {item.github && (
+                <a
+                  href={item.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="github-button"
+                >
+                  View Repository →
+                </a>
+              )}
             </article>
           ))}
         </div>
