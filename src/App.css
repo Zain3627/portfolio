@@ -309,7 +309,7 @@
   display: flex;
   width: max-content;
   gap: 14px;
-  animation: skillsScroll 40s linear infinite;
+  animation: skillsScroll 50s linear infinite;
 }
 
 @keyframes skillsScroll {

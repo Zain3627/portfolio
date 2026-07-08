@@ -42,7 +42,8 @@ const certificateUrls = [
   new URL('../media/certificates/sprintsXmicrosoft.pdf', import.meta.url).href,
   new URL('../media/certificates/cf.png', import.meta.url).href,
   new URL('../media/certificates/ai-engineer-1-badge.png', import.meta.url).href,
-  new URL('../media/certificates/zindi.jpg', import.meta.url).href
+  new URL('../media/certificates/zindi.jpg', import.meta.url).href,
+  new URL('../media/certificates/SOFTWAREENGINEERINGSOFTWAREDEVELOPERL1_Badge.pdf', import.meta.url).href,
 ]
 
 // type MediaFrame = {
@@ -81,7 +82,7 @@ type CertificateItem = {
   title: string
   fileUrl: string
   achievement: string
-  learned: string
+  learned: string[]
   fileType?: 'pdf' | 'image' // defaults to 'pdf' if omitted
   date: string
 }
@@ -455,30 +456,32 @@ const researchItems: ResearchItem[] = [
 
 const certificateItems: CertificateItem[] = [
   {
-    title: 'Personal Achievement Certificate',
+    title: 'Second Place In HackerRank x CPClub AAST Event',
     fileUrl: certificateUrls[2].toString(),
     achievement:
-      'This certificate shows continued progress and effort in the areas where I keep building my portfolio and technical profile.',
+      'Placed 2nd in a competitive algorithmic problem-solving event hosted by HackerRank x CPClub AAST.',
     learned:
-      'It reminded me to keep improving through practice, feedback, and project-based learning.',
+      ['Solved multiple competitive programming problems involving data structures and algorithms.', 'Improved implementation speed and debugging efficiency under strict time constraints.'],
     date: 'Apr 2026',
   },
   {
-    title: 'Certificate of Achievement',
+    title: 'Completed Machine Learning Engineer Intern – Digital Egypt Pioneers Initiative',
     fileUrl: certificateUrls[1].toString(),
     achievement:
-      'This recognition represents a formal milestone from my academic and technical journey as documented in the certificate folder.',
-    learned:
-      'It reinforced consistency, discipline, and the value of building a strong technical base over time.',
+      'Completed a structured 180-hour applied ML programme covering data engineering, computer vision, NLP, and cloud deployment, with hands-on delivery across all domains.',
+    learned: [
+  'Designed and deployed end-to-end machine learning solutions for computer vision, NLP, and predictive analytics, covering data preprocessing, feature engineering, model training, evaluation, and deployment using Azure Machine Learning, Azure App Service, and Azure Blob Storage.',
+  'Collaborated in a team to deliver a real-world capstone project, applying task distribution, version control, communication, and collaborative software development practices to meet project milestones.'
+  ],
     date: 'Dec 2025',
   },
   {
-    title: 'Codeforces Specialist',
+    title: 'Reached Specialist on Codeforces',
     fileUrl: certificateUrls[6].toString(),
     achievement:
       'Reached Specialist rank on Codeforces with a rating of 1448, reflecting consistent competitive programming performance.',
     learned:
-      'It reinforced steady, deliberate practice in algorithms and problem-solving, and showed measurable progress from sustained effort over time.',
+     [ 'Solved hundreds of algorithmic problems across multiple difficulty levels.', 'Strengthened graph algorithms, dynamic programming, greedy algorithms, and binary search.', 'Improved problem-solving speed during time constrained competitive contests.'],
     fileType: 'image',
     date: 'Nov 2025',
   },
@@ -488,26 +491,26 @@ const certificateItems: CertificateItem[] = [
     achievement:
     'Completed the Artificial Intelligence Engineer 1 learning path on Coursera, covering foundational AI engineering concepts and skills.',
     learned:
-    'It gave me a structured grounding in core AI engineering practices and reinforced concepts I could apply directly to my own projects.',
+    ['Studied core AI concepts including machine learning, neural networks, and natural language processing', 'Closed a gap between theoretical ML knowledge and engineering-grade implementation practices.'],
     fileType: 'image',
     date: 'Oct 2025',
   },
   {
-    title: 'Sprints x Microsoft',
+    title: 'Sprints x Microsoft Summer Camp – AI and Machine Learning',
     fileUrl: certificateUrls[5].toString(),
     achievement:
-      'This certificate reflects participation in an industry-linked learning experience connected to Microsoft and Sprints.',
+      'Completed a Microsoft-supported AI & Machine Learning summer program, gaining practical experience with the end-to-end machine learning workflow through hands-on exercises and projects.',
     learned:
-      'It helped me connect classroom learning with practical engineering skills and professional development.',
+      ['Applied data preprocessing, feature engineering, and train/test validation workflows.', 'Built and evaluated machine learning models on practical datasets.'],
     date: 'Oct 2025',
   },
   {
-    title: 'ECPC Qualification - 1st Place',
+    title: 'Participated in ECPC (Egyptian Collegiate Programming Contest) Qualifications',
     fileUrl: certificateUrls[0].toString(),
     achievement:
-      'This certificate reflects strong competitive programming performance and the ability to solve algorithmic problems under pressure.',
+      'Participated in the Egyptian Collegiate Programming Contest (ECPC) qualification round.',
     learned:
-      'It strengthened my speed, correctness under constraints, and my habit of breaking complex problems into precise steps.',
+      ['Practiced collaborative problem solving in a team environment.', 'Improved optimization, debugging, and solution verification under pressure.'],
     date: 'Jul 2025',
   },
   {
@@ -516,19 +519,31 @@ const certificateItems: CertificateItem[] = [
     achievement:
       'Ranked 15th on the leaderboard out of over 2,000 participants in a competitive data science challenge focused on financial inclusion in Africa.',
     learned:
-      'It sharpened my ability to approach a real-world dataset end-to-end — from feature engineering to model tuning — while competing against a large, skilled field.',
+      ['Built an end-to-end machine learning pipeline for a real-world tabular dataset.', 'Doing research and development trials through evaluating models using competition metrics while iterating through multiple experiments.'],
     fileType: 'image',
     date: 'Jun 2025',
   },  
   {
-    title: 'Technical Recognition Certificate',
+    title: 'IEEEXtreme Programming Competition',
     fileUrl: certificateUrls[3].toString(),
     achievement:
-      'This certificate marks another formal recognition from the set of achievements in my media folder.',
+      'Ranked in top 2% in the Egyptian region and in top 20% worldwide from over 8000 teams',
     learned:
-      'It strengthened my focus on showing measurable outcomes and not only completed work.',
+      ['Solved advanced algorithmic problems over a continuous 24-hour contest', 'Improved endurance, time management, and task prioritization in long competitions.'],
     date: 'Oct 2024',
-  }
+  },
+  {
+    title: 'Completed Software Engineer Developer Roadmap',
+    fileUrl: certificateUrls[9].toString(),
+    achievement:
+    'Completed the Software Engineering (Software Developer) L1 certification, demonstrating foundational knowledge of software development principles, programming, version control, and professional engineering practices.',
+
+    learned: [
+    'Applied core software engineering concepts, including object-oriented programming, Git version control, debugging, testing, and clean code principles.',
+    'Strengthened knowledge of the software development lifecycle (SDLC), collaborative development workflows, and industry-standard practices for designing, building, and maintaining software systems.'
+    ],
+    date: 'Oct 2024',
+  },
 ]
 
 
@@ -1039,35 +1054,40 @@ function CertificatesPage() {
       <section className="page page--certificates">
         <SectionHeader
           eyebrow="Certificates"
-          title="Certificates with achievement context and learning takeaways."
-          description="Each certificate is shown with the corresponding file from the media folder, plus what the achievement meant and what I learned from it."
+          title="Certificates & Achievements"
+          description="Certifications and accomplishments that document my growth as an AI and software engineer through industry training, competitions, and practical project experience."
         />
         <div className="certificate-grid">
           {certificateItems.map((certificate) => (
-            <article key={certificate.title} className="certificate-card">
-              <div className="certificate-preview">
-                {certificate.fileType === 'image' ? (
-                  <img src={certificate.fileUrl} alt={certificate.title} />
-                ) : (
-                  <iframe title={certificate.title} src={certificate.fileUrl} />
-                )}
-              </div>
-              <div className="certificate-content">
-                <p className="card-label">Certificate</p>
-                <h3>{certificate.title}</h3>
-                <p className="certificate-date">{certificate.date}</p>
-                <p>
-                  <strong>Achievement:</strong> {certificate.achievement}
-                </p>
-                <p>
-                  <strong>What I learned:</strong> {certificate.learned}
-                </p>
-                <a href={certificate.fileUrl} target="_blank" rel="noreferrer" className="button">
-                  Open certificate
-                </a>
-              </div>
-            </article>
+  <article key={certificate.title} className="certificate-card">
+    <div className="certificate-preview">
+      {certificate.fileType === 'image' ? (
+        <img src={certificate.fileUrl} alt={certificate.title} />
+      ) : (
+        <iframe title={certificate.title} src={certificate.fileUrl} />
+      )}
+    </div>
+    <div className="certificate-content">
+      <p className="card-label">Certificate</p>
+      <h3>{certificate.title}</h3>
+      <p className="certificate-date">{certificate.date}</p>
+      <p>
+        <strong>Achievement:</strong> {certificate.achievement}
+      </p>
+      <div className="certificate-learned">
+        <strong>What I learned:</strong>
+        <ul>
+          {certificate.learned.map((point, index) => (
+            <li key={index}>{point}</li>
           ))}
+        </ul>
+      </div>
+      <a href={certificate.fileUrl} target="_blank" rel="noreferrer" className="button">
+        Open certificate
+      </a>
+    </div>
+  </article>
+))}
         </div>
       </section>
     </SiteLayout>
