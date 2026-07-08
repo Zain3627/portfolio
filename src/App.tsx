@@ -367,6 +367,7 @@ interface EducationEntry {
   start: string
   end: string
   description: string
+  takeaways: string[]
   logo: string
   coursework?: string[]
   transcriptUrl?: string
@@ -390,7 +391,14 @@ const educationTimeline: EducationEntry[] = [
     end: "Jul 2022",
     description:
       "A boarding school experience that pushed me to grow well beyond academics — living away from home built independence, discipline, and teamwork skills I still rely on today. Graduated 2nd in my school and ranked 34th nationally in my senior year.",
-    logo: gharbiyaLogo,
+    takeaways: [
+  "Graduated 2nd in school and ranked 34th nationally.",
+  "Completed 3 year-long interdisciplinary capstone projects.",
+  "Developed independence and self-discipline through a 3-year boarding school experience.",
+  "Strengthened teamwork, communication, and time management in project-based learning.",
+  "Learned to collaborate effectively with teammates from diverse backgrounds."
+],
+      logo: gharbiyaLogo,
   },
   {
     institution: "Arab Academy for Science, Technology & Maritime Transport (AASTMT)",
@@ -398,6 +406,13 @@ const educationTimeline: EducationEntry[] = [
     start: "Sep 2022",
     end: "Present",
     description: "Currently ranked 2nd in my class.",
+    takeaways: [
+  "Currently ranked 2nd in my class.",
+  "Completed software engineering and AI projects with multiple teams.",
+  "Participated in volunteer activities and student initiatives.",
+  "Strengthened collaboration, technical communication, and project planning.",
+  "Built a solid foundation in computer engineering, algorithms, and artificial intelligence."
+],
     logo: aastmtLogo,
     coursework: [
       "Discrete Mathematics",
@@ -996,6 +1011,21 @@ function AboutPage() {
                   <h3>{entry.institution}</h3>
                   <p className="timeline-degree">{entry.degree}</p>
                   <p>{entry.description}</p>
+
+                  {entry.takeaways && entry.takeaways.length > 0 && (
+  <div className="timeline-takeaways">
+    <p className="timeline-takeaways-label">Key Takeaways</p>
+
+    <ul className="takeaway-list">
+      {entry.takeaways.map((item) => (
+        <li key={item} className="takeaway-item">
+          <span className="takeaway-icon">✓</span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
 
                   {entry.coursework && entry.coursework.length > 0 && (
                     <div className="timeline-coursework">

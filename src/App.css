@@ -1429,8 +1429,8 @@ padding:30px;
 }
 
 .volunteer-card-logo {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
@@ -1471,4 +1471,60 @@ padding:30px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
+}
+
+
+/* neeeew about takeaways*/
+
+.timeline-takeaways {
+  margin-top: 1.5rem;
+}
+
+.timeline-takeaways-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.takeaway-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.takeaway-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.takeaway-icon {
+  flex-shrink: 0;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+  color: white;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  margin-top: 2px;
 }
