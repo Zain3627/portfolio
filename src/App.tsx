@@ -688,14 +688,14 @@ interface Message {
 
 // ─── FastAPI skeleton ─────────────────────────────────────────────────────────
 
-const FASTAPI_BASE = '/api' // TODO: update to your deployed URL
+// const FASTAPI_BASE = '' // TODO: update to your deployed URL
 
 async function askChatbot(question: string): Promise<string> {
-  const response = await fetch(`${FASTAPI_BASE}/ask`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question }),
-  })
+  const response = await fetch(`/api/ask`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ question }),
+})
 
   if (!response.ok) {
     throw new Error(`Server responded with ${response.status}`)
