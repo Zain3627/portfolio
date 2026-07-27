@@ -213,40 +213,42 @@ const marqueeSkills = homeSkillsName.map(resolveSkillItem)
 
 const projects: Project[] = [
     {
-    title: 'RAG Knowledge Base Chatbot',
-    subtitle: 'Production-Ready Retrieval-Augmented Generation System',
-    summary:
-      'Built an end-to-end Retrieval-Augmented Generation (RAG) chatbot capable of answering questions over custom documents using hybrid search, semantic retrieval, and a production-ready FastAPI backend deployed on AWS.',
-    technologies: [
-      'Python',
-      'RAG',
-      'FAISS',
-      'FastAPI',
-      'Hybrid Search',
-      'Docker',
-      'AWS EC2',
-      'REST API',
-    ],
-    whatIDid: [
-      'Implemented a Retrieval-Augmented Generation pipeline combining dense vector retrieval with keyword-based hybrid search for improved retrieval accuracy.',
-      'Indexed document embeddings in a FAISS vector store to enable efficient semantic search over the knowledge base.',
-      'Developed a FastAPI backend exposing REST endpoints for document retrieval and question answering.',
-      'Containerized the application with Docker and deployed it to an AWS EC2 instance for production hosting.',
-      'Designed the system as a modular, scalable architecture separating ingestion, retrieval, and inference components.'
-    ],
-    impact: [
-      'Delivered a production-ready RAG service capable of serving chatbot requests through a REST API.',
-      'Improved answer relevance by combining semantic similarity search with keyword matching.',
-      'Demonstrated practical deployment of LLM applications using modern backend and cloud infrastructure.'
-    ],
-    media: [
-      { src: chatintegration, label: 'RAG chatbot interface' },
-      { src: chatwindow, label: 'Chat window' },
-      { src: ragArchitecture, label: 'RAG monitoring dashboard and observability' }
-    ],
-    github: 'https://github.com/Zain3627/zain-chatbot/',
-    date: '2026'
-  },
+  title: 'RAG Knowledge Base Chatbot',
+  subtitle: 'Production-Ready LLM Application',
+  summary:
+    'Built an end-to-end Retrieval-Augmented Generation (RAG) chatbot that answers questions over a custom knowledge base using LangChain, hybrid search, and a FastAPI backend deployed on AWS.',
+  technologies: [
+    'Python',
+    'LangChain',
+    'RAG',
+    'Hybrid Search',
+    'FAISS',
+    'BM25',
+    'FastAPI',
+    'Docker',
+    'AWS EC2',
+    'REST API'
+  ],
+  whatIDid: [
+    'Built a LangChain-based RAG pipeline integrating retrieval, prompt engineering, and LLM inference.',
+    'Implemented hybrid retrieval by combining FAISS semantic search with BM25 keyword search using LangChain EnsembleRetriever.',
+    'Developed a FastAPI backend exposing REST endpoints for document retrieval and question answering.',
+    'Containerized the application with Docker and deployed it on an AWS EC2 instance.',
+    'Integrated LangSmith tracing for monitoring and debugging LLM executions.'
+  ],
+  impact: [
+    'Delivered a production-ready chatbot capable of answering questions over a custom knowledge base.',
+    'Improved retrieval quality by combining semantic and lexical search techniques.',
+    'Demonstrated practical LLM application development using modern AI and cloud technologies.'
+  ],
+  media: [
+    { src: chatintegration, label: 'RAG chatbot interface' },
+    { src: chatwindow, label: 'Chat window' },
+    { src: ragArchitecture, label: 'RAG monitoring dashboard and observability' }
+  ],
+  github: 'https://github.com/Zain3627/<repo>',
+  date: '2026'
+},
   {
     title: 'Premier League Predictor',
     subtitle: 'End-to-End MLOps System',
