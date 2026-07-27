@@ -688,7 +688,7 @@ interface Message {
 
 // ─── FastAPI skeleton ─────────────────────────────────────────────────────────
 
-const FASTAPI_BASE = 'http://3.70.220.101:8000' // TODO: update to your deployed URL
+const FASTAPI_BASE = '/api' // TODO: update to your deployed URL
 
 async function askChatbot(question: string): Promise<string> {
   const response = await fetch(`${FASTAPI_BASE}/ask`, {
