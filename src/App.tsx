@@ -30,9 +30,9 @@ import aastmtLogo from '../media/aastmt-logo.png'
 import ragArchitecture from '../media/rag_chatbot/RAG_summary_pipeline.png'
 import chatwindow from '../media/rag_chatbot/chat_window.png'
 import chatintegration from '../media/rag_chatbot/chat_integration.png'
-import transcript from '../media/transcript.pdf'
 
 const cvUrl = new URL('../media/full_CV.pdf', import.meta.url).href
+const transcript = new URL('../media/transcript.pdf', import.meta.url).href
 const skillIconSources = import.meta.glob('../media/skills/*.{svg,png,jpg,jpeg,webp}', {
   eager: true,
   import: 'default',
