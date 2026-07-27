@@ -763,6 +763,8 @@ const WELCOME_MSG: Message = {
   content: "Hi! I'm Zain's AI assistant. Ask me anything about his work, projects, or experience.",
 }
 
+const MAX_CHAT_MESSAGE_LENGTH = 150
+
 function TypingIndicator() {
   return (
     <div className="msg-row bot">
@@ -791,6 +793,20 @@ function ChatPage() {
   async function sendMessage() {
     const text = input.trim()
     if (!text || loading) return
+
+    if (text.length > MAX_CHAT_MESSAGE_LENGTH) {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: idCounter.current++,
+          role: 'bot',
+          content: `Maximum message length is ${MAX_CHAT_MESSAGE_LENGTH} characters. Please shorten your question and try again.`,
+          error: true,
+        },
+      ])
+      setTimeout(() => inputRef.current?.focus(), 50)
+      return
+    }
 
     const userMsg: Message = { id: idCounter.current++, role: 'user', content: text }
     setMessages(prev => [...prev, userMsg])
