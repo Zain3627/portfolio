@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { NavLink, Navigate, Route, Routes, useNavigate, useParams, Link } from 'react-router-dom'
 import './App.css'
 
@@ -23,6 +23,7 @@ import plPipelines3 from '../media/pl_predictor/pipelines3.jpg'
 import plPredictionPage from '../media/pl_predictor/prediction_page.jpg'
 import awsCloudClubImage from '../media/aws-cloud-club-core-team.png'
 import cpclogo from '../media/cpc-club.png'
+import chatBotAvatar from '../media/chat-bot.png'
 import profilePhoto from '../media/profile.jpg'
 import gharbiyaLogo from '../media/gharbiya-logo.png'
 import aastmtLogo from '../media/aastmt-logo.png'
@@ -674,6 +675,40 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
     </div>
   )
 }
+// new chat insertings
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface Message {
+  id: number
+  role: 'bot' | 'user'
+  content: string
+  error?: boolean
+}
+
+// ─── FastAPI skeleton ─────────────────────────────────────────────────────────
+
+const FASTAPI_BASE = 'http://3.70.220.101:8000' // TODO: update to your deployed URL
+
+async function askChatbot(question: string): Promise<string> {
+  const response = await fetch(`${FASTAPI_BASE}/ask`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Server responded with ${response.status}`)
+  }
+
+  const data = await response.json()
+
+  // TODO: adjust key to match your FastAPI response shape, e.g. data.answer
+  if (!data.answer) throw new Error('Unexpected response format')
+  return data.answer as string
+}
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
 
 function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -684,29 +719,15 @@ function SiteLayout({ children }: { children: ReactNode }) {
           <p className="topbar-label">Zain Tamer Zain ElAbdin</p>
         </div>
         <nav className="nav" aria-label="Primary">
-          <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            Home
-          </NavLink>
-          <NavLink to="/projects" className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            Projects
-          </NavLink>
-          <NavLink to="/research" className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            Research
-          </NavLink>
-          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            About
-          </NavLink>
-          <NavLink to="/certificates" className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            Certificates
-          </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : undefined)}>
-            Contact
-          </NavLink>
+          <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>Home</NavLink>
+          <NavLink to="/projects" className={({ isActive }) => (isActive ? 'active' : undefined)}>Projects</NavLink>
+          <NavLink to="/research" className={({ isActive }) => (isActive ? 'active' : undefined)}>Research</NavLink>
+          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : undefined)}>About</NavLink>
+          <NavLink to="/certificates" className={({ isActive }) => (isActive ? 'active' : undefined)}>Certificates</NavLink>
+          <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : undefined)}>Contact</NavLink>
         </nav>
       </header>
-
       <main className="content">{children}</main>
-
       <footer className="site-footer">
         <div>
           <p className="footer-name">Zain Tamer Zain ElAbdin</p>
@@ -722,6 +743,150 @@ function SiteLayout({ children }: { children: ReactNode }) {
           <p>+20 109 433 2424</p>
         </div>
       </footer>
+      <Link
+        to="/chat"
+        className="chat-bubble"
+        aria-label="Open Chat with Zain's bot"
+        data-tooltip="Chat with Zain's bot"
+      >
+        <img className="chat-bubble__icon" src={chatBotAvatar} alt="" aria-hidden="true" />
+      </Link>
+    </div>
+  )
+}
+
+// ─── Chat Page ────────────────────────────────────────────────────────────────
+
+const WELCOME_MSG: Message = {
+  id: 0,
+  role: 'bot',
+  content: "Hi! I'm Zain's AI assistant. Ask me anything about his work, projects, or experience.",
+}
+
+function TypingIndicator() {
+  return (
+    <div className="msg-row bot">
+      <div className="chat-avatar" aria-hidden="true">Z</div>
+      <div className="bubble bot typing-bubble">
+        <span className="dot" />
+        <span className="dot" />
+        <span className="dot" />
+      </div>
+    </div>
+  )
+}
+
+function ChatPage() {
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MSG])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const idCounter = useRef(1)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, loading])
+
+  async function sendMessage() {
+    const text = input.trim()
+    if (!text || loading) return
+
+    const userMsg: Message = { id: idCounter.current++, role: 'user', content: text }
+    setMessages(prev => [...prev, userMsg])
+    setInput('')
+    setLoading(true)
+
+    try {
+      const answer = await askChatbot(text)
+      setMessages(prev => [
+        ...prev,
+        { id: idCounter.current++, role: 'bot', content: answer },
+      ])
+    } catch (err) {
+      const detail =
+        err instanceof Error ? err.message : 'Unknown error'
+      setMessages(prev => [
+        ...prev,
+        {
+          id: idCounter.current++,
+          role: 'bot',
+          content: `Sorry, I couldn't reach the server right now. (${detail}) Please try again later.`,
+          error: true,
+        },
+      ])
+    } finally {
+      setLoading(false)
+      setTimeout(() => inputRef.current?.focus(), 50)
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
+
+  return (
+    <div className="chat-page">
+      {/* Header card */}
+      <div className="chat-header-card">
+        <div className="chat-header-avatar">Z</div>
+        <div>
+          <p className="chat-header-name">Zain</p>
+          <p className="chat-header-status">
+            <span className="status-dot" aria-hidden="true" />
+            Online
+          </p>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
+        {messages.map(msg =>
+          msg.role === 'bot' ? (
+            <div key={msg.id} className="msg-row bot">
+              <div className="chat-avatar" aria-hidden="true">Z</div>
+              <div className={`bubble bot${msg.error ? ' bubble-error' : ''}`}>
+                {msg.error && <span className="error-icon" aria-label="Error">⚠ </span>}
+                {msg.content}
+              </div>
+            </div>
+          ) : (
+            <div key={msg.id} className="msg-row user">
+              <div className="chat-avatar user-avatar" aria-hidden="true">U</div>
+              <div className="bubble user">{msg.content}</div>
+            </div>
+          )
+        )}
+
+        {loading && <TypingIndicator />}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input */}
+      <div className="chat-input-row">
+        <input
+          ref={inputRef}
+          className="chat-input"
+          type="text"
+          placeholder="Type a message…"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={loading}
+          aria-label="Message input"
+        />
+        <button
+          className="chat-send-btn"
+          onClick={sendMessage}
+          disabled={loading || !input.trim()}
+          aria-label="Send message"
+        >
+          ➤
+        </button>
+      </div>
     </div>
   )
 }
@@ -733,10 +898,8 @@ function HomePage() {
         <div className="home-layout">
           <div className="home-hero-grid">
             <article className="home-hero-copy">
-              
               <h2 className="hero-name">Zain Tamer Zain ElAbdin</h2>
               <p className="hero-role">AI Engineer & Researcher • ML • NLP • Computer Vision • MLOps</p>
-              
               <h3>Production-minded AI with strong algorithmic thinking.</h3>
               <p className="hero-summary">
                 I build practical AI systems with a focus on model training, data pipelines, deployment, and clean
@@ -791,31 +954,30 @@ function HomePage() {
           </div>
 
           <section className="skills-marquee" aria-label="Skills moving bar">
-  <div className="skills-marquee__track">
-    {marqueeSkills.map((skill, index) => (
-      <div key={`${skill.slug}-${index}`} className="skills-pill">
-        <span className="skills-pill__icon" aria-hidden="true">
-          {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
-        </span>
-        <span>{skill.name}</span>
-      </div>
-    ))}
-    {marqueeSkills.map((skill, index) => (
-      <div key={`${skill.slug}-dup-${index}`} className="skills-pill" aria-hidden="true">
-        <span className="skills-pill__icon" aria-hidden="true">
-          {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
-        </span>
-        <span>{skill.name}</span>
-      </div>
-    ))}
-  </div>
-</section>
+            <div className="skills-marquee__track">
+              {marqueeSkills.map((skill, index) => (
+                <div key={`${skill.slug}-${index}`} className="skills-pill">
+                  <span className="skills-pill__icon" aria-hidden="true">
+                    {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
+                  </span>
+                  <span>{skill.name}</span>
+                </div>
+              ))}
+              {marqueeSkills.map((skill, index) => (
+                <div key={`${skill.slug}-dup-${index}`} className="skills-pill" aria-hidden="true">
+                  <span className="skills-pill__icon" aria-hidden="true">
+                    {skill.icon ? <img src={skill.icon} alt="" /> : skill.name.slice(0, 1)}
+                  </span>
+                  <span>{skill.name}</span>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
     </SiteLayout>
   )
 }
-
 function slugify(title: string) {
   return title
     .toLowerCase()
@@ -1341,6 +1503,7 @@ function App() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/certificates" element={<CertificatesPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/chat" element={<SiteLayout><ChatPage /></SiteLayout>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
