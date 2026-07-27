@@ -27,6 +27,10 @@ import chatBotAvatar from '../media/chat-bot.png'
 import profilePhoto from '../media/profile.jpg'
 import gharbiyaLogo from '../media/gharbiya-logo.png'
 import aastmtLogo from '../media/aastmt-logo.png'
+import ragArchitecture from '../media/rag_chatbot/RAG_summary_pipeline.png'
+import chatwindow from '../media/rag_chatbot/chat_window.png'
+import chatintegration from '../media/rag_chatbot/chat_integration.png'
+import transcript from '../media/transcript.pdf'
 
 const cvUrl = new URL('../media/full_CV.pdf', import.meta.url).href
 const skillIconSources = import.meta.glob('../media/skills/*.{svg,png,jpg,jpeg,webp}', {
@@ -208,6 +212,41 @@ function resolveSkillItem(name: string): SkillItem {
 const marqueeSkills = homeSkillsName.map(resolveSkillItem)
 
 const projects: Project[] = [
+    {
+    title: 'RAG Knowledge Base Chatbot',
+    subtitle: 'Production-Ready Retrieval-Augmented Generation System',
+    summary:
+      'Built an end-to-end Retrieval-Augmented Generation (RAG) chatbot capable of answering questions over custom documents using hybrid search, semantic retrieval, and a production-ready FastAPI backend deployed on AWS.',
+    technologies: [
+      'Python',
+      'RAG',
+      'FAISS',
+      'FastAPI',
+      'Hybrid Search',
+      'Docker',
+      'AWS EC2',
+      'REST API',
+    ],
+    whatIDid: [
+      'Implemented a Retrieval-Augmented Generation pipeline combining dense vector retrieval with keyword-based hybrid search for improved retrieval accuracy.',
+      'Indexed document embeddings in a FAISS vector store to enable efficient semantic search over the knowledge base.',
+      'Developed a FastAPI backend exposing REST endpoints for document retrieval and question answering.',
+      'Containerized the application with Docker and deployed it to an AWS EC2 instance for production hosting.',
+      'Designed the system as a modular, scalable architecture separating ingestion, retrieval, and inference components.'
+    ],
+    impact: [
+      'Delivered a production-ready RAG service capable of serving chatbot requests through a REST API.',
+      'Improved answer relevance by combining semantic similarity search with keyword matching.',
+      'Demonstrated practical deployment of LLM applications using modern backend and cloud infrastructure.'
+    ],
+    media: [
+      { src: chatintegration, label: 'RAG chatbot interface' },
+      { src: chatwindow, label: 'Chat window' },
+      { src: ragArchitecture, label: 'RAG monitoring dashboard and observability' }
+    ],
+    github: 'https://github.com/Zain3627/zain-chatbot/',
+    date: '2026'
+  },
   {
     title: 'Premier League Predictor',
     subtitle: 'End-to-End MLOps System',
@@ -433,7 +472,7 @@ const educationTimeline: EducationEntry[] = [
       "Cyber Security",
       "Intro to Intelligent Human Computer Interaction"
     ],
-    transcriptUrl: "../media/transcript.pdf",
+    transcriptUrl: transcript,
   },
 ]
 const volunteerExperiences: VolunteerEntry[] = [
@@ -1337,14 +1376,14 @@ function AboutPage() {
                   )}
 
                   {entry.transcriptUrl && (
-                    
-                      <a href={entry.transcriptUrl}
-                      download
-                      className="github-button"
-                    >
-                      Download unofficial transcript ↓
-                    </a>
-                  )}
+  
+                  <a  href={entry.transcriptUrl}
+                    download="unofficial-transcript.pdf"
+                    className="github-button"
+                  >
+                    Download unofficial transcript ↓
+                  </a>
+                )}
                 </div>
               </div>
             ))}
