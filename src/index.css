@@ -1,17 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg: #06101d;
-  --bg-alt: #0a1a30;
-  --surface: rgba(8, 17, 31, 0.78);
-  --surface-strong: #0c1528;
-  --border: rgba(212, 175, 55, 0.2);
+  --bg: #0a1628;
+  --bg-alt: #132244;
+  --surface: rgba(19, 34, 68, 0.78);
+  --surface-strong: #132244;
+  --border: rgba(59, 130, 246, 0.24);
   --heading: #f8fafc;
-  --text: #c8d3e2;
-  --text-soft: #93a6bf;
-  --accent: #d4af37;
-  --accent-strong: #f0c95b;
-  --accent-soft: rgba(212, 175, 55, 0.12);
+  --text: #e2e8f0;
+  --text-soft: #94a3b8;
+  --primary: #1e3a8a;
+  --blue-mid: #3b82f6;
+  --accent: #22d3ee;
+  --accent-strong: #67e8f9;
+  --accent-soft: rgba(34, 211, 238, 0.12);
+  --success: #34d399;
+  --error: #f87171;
+  --error-soft: rgba(248, 113, 113, 0.14);
   --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
   --font-display: 'Fraunces', serif;
   --font-body: 'Manrope', system-ui, sans-serif;
@@ -19,8 +24,8 @@
   color-scheme: dark;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(212, 175, 55, 0.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(45, 87, 166, 0.18), transparent 30%),
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.1), transparent 28%),
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 30%),
     linear-gradient(180deg, var(--bg), var(--bg-alt));
   font-family: var(--font-body);
   font-synthesis: none;
@@ -42,8 +47,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(212, 175, 55, 0.12), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(45, 87, 166, 0.14), transparent 26%),
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.1), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.14), transparent 26%),
     linear-gradient(180deg, var(--bg), var(--bg-alt));
 }
 
@@ -69,7 +74,7 @@ img {
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(34, 211, 238, 0.3);
 }
 
 h1,
