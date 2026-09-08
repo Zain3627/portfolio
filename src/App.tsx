@@ -1085,9 +1085,9 @@ function ChatPage() {
       <div className="chat-suggestions" aria-label="Suggested questions">
         <span>Try asking</span>
         {[
-          'Which project best shows your AI skills?',
-          'What are you researching now?',
-          'Tell me about your volunteering.',
+          "Which project best shows Zain's AI skills?",
+          "Tell me about Zain's research experience.",
+          "Tell me about Zain's volunteering.",
         ].map(prompt => (
           <button key={prompt} type="button" onClick={() => {
             setInput(prompt)
