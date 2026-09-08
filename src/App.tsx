@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useState, useEffect, useRef } from "react"
-import { NavLink, Navigate, Route, Routes, useNavigate, useParams, Link } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams, Link } from 'react-router-dom'
 import './App.css'
 
 import bankLogin from '../media/java_banking_system/login_page.jpg'
@@ -30,6 +30,17 @@ import aastmtLogo from '../media/aastmt-logo.png'
 import ragArchitecture from '../media/rag_chatbot/RAG_summary_pipeline.png'
 import chatwindow from '../media/rag_chatbot/chat_window.png'
 import chatintegration from '../media/rag_chatbot/chat_integration.png'
+import summaryWHO from '../media/who_covid/summary.png'
+import carAtRest from '../media/car/car_at_rest.png'
+import points from '../media/car/points.jpeg'
+import carSetsHeading from '../media/car/car_sets_heading.png'
+import reachesGoal from '../media/car/reaches_goal.png'
+import awsWorkshopOne from '../media/aws/1.jpg'
+import awsWorkshopTwo from '../media/aws/2.jpg'
+import awsFeedback from '../media/aws/feedback.png'
+import cpcTasks from '../media/cpc/1.png'
+import cpcHackathonOne from '../media/cpc/2.jpg'
+import cpcHackathonTwo from '../media/cpc/3.jpg'
 
 const cvUrl = new URL('../media/full_CV.pdf', import.meta.url).href
 const transcript = new URL('../media/transcript.pdf', import.meta.url).href
@@ -49,6 +60,14 @@ const certificateUrls = [
   new URL('../media/certificates/ai-engineer-1-badge.png', import.meta.url).href,
   new URL('../media/certificates/zindi.jpg', import.meta.url).href,
   new URL('../media/certificates/SOFTWAREENGINEERINGSOFTWAREDEVELOPERL1_Badge.pdf', import.meta.url).href,
+  new URL('../media/certificates/2027-ECPC Q 1-Zain Tamer-PLACE.pdf', import.meta.url).href,
+  new URL('../media/certificates/2027-ICPC Egyptian CPC-Zain Tamer-PLACE.pdf', import.meta.url).href,
+  new URL('../media/certificates/team-image-2027.jpeg', import.meta.url).href,
+  new URL('../media/certificates/Certificate-F-2020-E9281FABE74-04e8637ddd62ea4bafa37dc2d14a9980.pdf', import.meta.url).href,
+  new URL('../media/certificates/nasa_2020.pdf', import.meta.url).href,
+  new URL('../media/certificates/Octans.jpeg', import.meta.url).href,
+  new URL('../media/certificates/nasa_covid_2019.pdf', import.meta.url).href,
+  new URL('../media/certificates/Beam line certificate.pdf', import.meta.url).href,
 ]
 
 // type MediaFrame = {
@@ -59,6 +78,7 @@ const certificateUrls = [
 interface ProjectMedia {
   src: string
   label: string
+  fit?: 'cover' | 'contain'
 }
 
 interface Project {
@@ -81,6 +101,9 @@ type ResearchItem = {
   date: string
   summary: string
   contributions: string[]
+  tagline: string
+  highlights: string[]
+  visual: 'papers' | 'vision' | 'algorithms'
   skills: string[]
   github?: string
 }
@@ -91,6 +114,11 @@ type CertificateItem = {
   achievement: string
   learned: string[]
   fileType?: 'pdf' | 'image' // defaults to 'pdf' if omitted
+  evidence?: {
+    label: string
+    fileUrl: string
+    fileType?: 'pdf' | 'image'
+  }[]
   date: string
 }
 
@@ -338,7 +366,9 @@ const projects: Project[] = [
       'Highlights research-style analysis and visual communication skills.',
       'Demonstrates disciplined work with large real-world datasets.',
     ],
-    note: 'No project media is stored in the repo for this analysis.',
+    media: [
+      { src: summaryWHO, label: 'Global COVID-19 analysis summary dashboard' },
+    ],
     github: 'https://github.com/Zain3627/WHO-COVID-19-global-daily-data-analysis-project',
     date: '2025'
   },
@@ -357,7 +387,12 @@ const projects: Project[] = [
       'Shows embedded systems thinking, autonomy, and control integration.',
       'Adds breadth beyond software-only projects.',
     ],
-    note: 'No project media is stored in the repo for this hardware project.',
+    media: [
+      { src: carAtRest, label: 'Autonomous car at its starting position' },
+      { src: points, label: 'Point-to-point navigation setup' },
+      { src: carSetsHeading, label: 'Car aligning with the target heading' },
+      { src: reachesGoal, label: 'Car reaching its target coordinates' },
+    ],
     date: '2025'
   },
   {
@@ -421,12 +456,14 @@ interface EducationEntry {
   transcriptUrl?: string
 }
 
-interface VolunteerEntry {
+interface ContributionEntry {
   organization: string
   role: string
   start: string
   end: string
   description: string
+  contributions: string[]
+  media: ProjectMedia[]
   logo: string
 }
 
@@ -457,20 +494,19 @@ const educationTimeline: EducationEntry[] = [
     takeaways: [
   "Currently ranked 2nd in my class.",
   "Completed software engineering and AI projects with multiple teams.",
-  "Participated in volunteer activities and student initiatives.",
   "Strengthened collaboration, technical communication, and project planning.",
   "Built a solid foundation in computer engineering, algorithms, and artificial intelligence."
 ],
     logo: aastmtLogo,
     coursework: [
       "Discrete Mathematics",
-      "Probability \& Statistical Analysis",
+      "Probability & Statistical Analysis",
       "Artificial Intelligence",
       "Data Analytics and Optimization",
       "Database Systems",
       "Computing Algorithms",
       "Object-Oriented Programming",
-      "Data Structure \& Algorithms",
+      "Data Structure & Algorithms",
       "Distributed and Parallel Systems",
       "Embedded Systems Design",
       "Cyber Security",
@@ -479,14 +515,25 @@ const educationTimeline: EducationEntry[] = [
     transcriptUrl: transcript,
   },
 ]
-const volunteerExperiences: VolunteerEntry[] = [
+const communityContributions: ContributionEntry[] = [
   {
-    organization: "AWS Cloud Club",
+    organization: "AWS Student Builder Group",
     role: "Core Team Member",
     start: "Mar 2026",
     end: "Present",
     description:
-      "Preparing and delivering workshops and sessions on AWS Cloud Practitioner topics, helping members build a solid foundation in core cloud concepts.",
+      "I help students move from hearing cloud terminology to understanding how real services fit together—and then give them space to build for themselves. Seeing someone discover a possible career path through a workshop is the kind of impact that keeps me volunteering.",
+    contributions: [
+      "Helped deliver a two-workshop learning journey: one session built the conceptual foundation, and the next moved into guided hands-on practice.",
+      "Explained AWS Regions and Availability Zones, IaaS/PaaS/SaaS, scalability, fault tolerance, high availability, IAM, security, and core services including EC2, S3, and RDS.",
+      "Guided learners through AWS Skill Builder labs and the process of launching a web page on an EC2 instance.",
+      "Received meaningful attendee feedback describing a shift from knowing little about cloud computing to seriously considering it as a career path.",
+    ],
+    media: [
+      { src: awsWorkshopOne, label: 'Guiding students through a hands-on AWS lab' },
+      { src: awsWorkshopTwo, label: 'Students applying cloud concepts during the workshop' },
+      { src: awsFeedback, label: 'Participant feedback after the two-workshop journey', fit: 'contain' },
+    ],
     logo: awsCloudClubImage,
   },
   {
@@ -495,12 +542,23 @@ const volunteerExperiences: VolunteerEntry[] = [
     start: "Sep 2025",
     end: "Present",
     description:
-      "Leading competitive programming sessions on algorithms and problem-solving, along with tutoring, upsolving sessions, and contests to help members sharpen their skills.",
+      "Competitive programming taught me patience, precision, and how much faster people grow when difficult problems are discussed openly. As a coach, I try to make every session a place where students feel challenged, supported, and excited to try once more.",
+    contributions: [
+      "Lead recurring topic sessions on algorithms and structured problem-solving, alongside tutoring and recorded upsolving sessions.",
+      "Completed more than 16 coaching sessions, dealing with different students and minds.",
+      "Help organize competitive hackathons in collaboration with HackerRank, creating an energetic environment where students can test their skills under pressure.",
+      "Turn contest solutions into reusable lessons so members improve not only their rankings, but also their confidence and way of thinking.",
+    ],
+    media: [
+      { src: cpcTasks, label: 'A sample of completed coaching tasks in the CP Club workspace', fit: 'contain' },
+      { src: cpcHackathonOne, label: 'Students collaborating and competing at an organized hackathon' },
+      { src: cpcHackathonTwo, label: 'A focused HackerRank competition environment' },
+    ],
     logo: cpclogo,
   },
 ]
 
-export const researchItems: ResearchItem[] = [
+const researchItems: ResearchItem[] = [
   {
     title:
       "AI Research Notes & Paper Reproductions",
@@ -509,6 +567,12 @@ export const researchItems: ResearchItem[] = [
 
     summary:
       "A continuously growing collection of structured analyses of influential AI papers spanning machine learning, deep learning, NLP, computer vision, LLMs, and related fields. The repository documents methodologies, key findings, limitations, and implementation insights, with selected papers reproduced to validate experimental results and deepen understanding.",
+
+    tagline: "A living lab for reading, testing, and explaining the AI papers shaping the field.",
+
+    highlights: ["Structured paper analysis", "Selected result reproduction", "Methods, limits & implications"],
+
+    visual: "papers",
 
     contributions: [
       "Summarized research papers across multiple AI domains using a consistent analytical framework.",
@@ -539,6 +603,12 @@ export const researchItems: ResearchItem[] = [
     summary:
       "Conducted an empirical study investigating how different data augmentation techniques and hyperparameter optimization strategies affect image classification performance across multiple deep learning architectures.",
 
+    tagline: "Controlled experiments exploring what actually improves image-classification generalization.",
+
+    highlights: ["Multiple CNN architectures", "Controlled augmentation trials", "Generalization evaluation"],
+
+    visual: "vision",
+
     contributions: [
       "Designed controlled experiments to isolate the effect of augmentation techniques.",
       "Compared multiple CNN architectures under identical training conditions.",
@@ -568,6 +638,12 @@ export const researchItems: ResearchItem[] = [
     summary:
       "Implemented and benchmarked deterministic and randomized selection algorithms to compare their theoretical complexity with empirical runtime behavior across varying input sizes.",
 
+    tagline: "A theory-versus-runtime investigation of deterministic and randomized selection.",
+
+    highlights: ["Algorithms built from scratch", "Multi-size benchmarks", "Theory compared with runtime"],
+
+    visual: "algorithms",
+
     contributions: [
       "Implemented Quicksort-based and BFPRT selection algorithms from scratch.",
       "Designed benchmarking experiments using multiple dataset sizes.",
@@ -589,6 +665,33 @@ export const researchItems: ResearchItem[] = [
 ]
 
 const certificateItems: CertificateItem[] = [
+  {
+    title: 'Qualified for the 2026 ECPC Finals',
+    fileUrl: certificateUrls[10].toString(),
+    achievement:
+      'Placed 22nd in the 2026 ECPC qualification round and advanced to the Egyptian Collegiate Programming Contest finals, where the team competed among the country’s strongest collegiate teams and placed 166th. This improved on the team’s 37th-place qualification result in 2025.',
+    learned: [
+      'Improved the qualification placement by 15 positions year over year, progressing from 37th to 22nd.',
+      'Strengthened team strategy, rapid problem selection, implementation, and debugging under contest pressure.',
+      'Earned experience competing at the ECPC finals level against Egypt’s top qualifying teams.',
+    ],
+    evidence: [
+      {
+        label: 'ECPC Qualifications — 22nd Place',
+        fileUrl: certificateUrls[10].toString(),
+      },
+      {
+        label: 'ECPC Finals — 166th Place',
+        fileUrl: certificateUrls[11].toString(),
+      },
+      {
+        label: 'Team Photo',
+        fileUrl: certificateUrls[12].toString(),
+        fileType: 'image',
+      },
+    ],
+    date: 'Aug 2026',
+  },
   {
     title: 'Second Place In HackerRank x CPClub AAST Event',
     fileUrl: certificateUrls[2].toString(),
@@ -678,6 +781,62 @@ const certificateItems: CertificateItem[] = [
     ],
     date: 'Oct 2024',
   },
+  {
+    title: 'Bronze Honour — International Youth Math Challenge',
+    fileUrl: certificateUrls[13].toString(),
+    achievement:
+      'Reached the final round of the 2020 International Youth Math Challenge, scored 13 points in the supervised 30-question exam, and placed among the top 15% of all participants.',
+    learned: [
+      'Applied broad mathematical knowledge across a demanding international challenge.',
+      'Strengthened accuracy, reasoning, and time management in a supervised final-round examination.',
+    ],
+    date: 'Dec 2020',
+  },
+  {
+    title: 'NASA Space Apps Cairo Hackathon',
+    fileUrl: certificateUrls[14].toString(),
+    achievement:
+      'Recognized by IEEE Young Professionals Egypt and the NASA Space Apps Cairo organizing committee for exceptional contribution and online participation in the sixth edition of the hackathon.',
+    learned: [
+      'Practiced collaborative problem-solving in an interdisciplinary hackathon environment.',
+      'Developed experience turning an open-ended challenge into a focused solution under time constraints.',
+    ],
+    date: 'Oct 2020',
+  },
+  {
+    title: 'CERN Beamline for Schools Competition',
+    fileUrl: certificateUrls[17].toString(),
+    achievement:
+      'As a member of Gharbiya STEM’s Stemadrons team, successfully submitted an experimental proposal to the seventh CERN Beamline for Schools competition.',
+    learned: [
+      'Helped shape scientific ideas into a structured experimental proposal.',
+      'Strengthened physics research, scientific communication, and teamwork through an international competition.',
+    ],
+    date: 'Jun 2020',
+  },
+  {
+    title: 'NASA Space Apps COVID-19 Challenge',
+    fileUrl: certificateUrls[16].toString(),
+    achievement:
+      'Recognized for exceptional contribution and online participation in the NASA Space Apps COVID-19 virtual hackathon held on May 30–31, 2020.',
+    learned: [
+      'Collaborated remotely on a time-sensitive, real-world global challenge.',
+      'Applied research, teamwork, and rapid solution development in a virtual hackathon setting.',
+    ],
+    date: 'May 2020',
+  },
+  {
+    title: 'Octans Math Tournament — Preliminary Round',
+    fileUrl: certificateUrls[15].toString(),
+    achievement:
+      'Participated in the preliminary round of the international Octans Math Tournament held in 2020.',
+    learned: [
+      'Tested mathematical reasoning through tournament-style problems.',
+      'Built confidence engaging with challenging mathematics beyond the school curriculum.',
+    ],
+    fileType: 'image',
+    date: '2020',
+  },
 ]
 
 
@@ -691,33 +850,28 @@ const contactLinks = [
     label: 'LinkedIn',
     value: 'linkedin.com/in/zaintamer',
     href: 'https://linkedin.com/in/zaintamer',
+    description: 'Professional experience, updates, and conversations.',
   },
   {
     label: 'GitHub',
     value: 'github.com/Zain3627',
     href: 'https://github.com/Zain3627',
+    description: 'Software projects, AI experiments, and research work.',
   },
   {
     label: 'Codeforces',
     value: 'codeforces.com/profile/Zain3627',
     href: 'https://codeforces.com/profile/Zain3627',
+    description: 'Competitive programming progress and contest history.',
   },
   {
     label: 'Kaggle',
     value: 'kaggle.com/zaintamer',
     href: 'https://www.kaggle.com/zaintamer',
+    description: 'Data science notebooks, competitions, and applied ML.',
   },
 ]
 
-function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return (
-    <div className="section-heading">
-      <p className="eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
-      <p>{description}</p>
-    </div>
-  )
-}
 // new chat insertings
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -754,36 +908,57 @@ async function askChatbot(question: string): Promise<string> {
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
 function SiteLayout({ children }: { children: ReactNode }) {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname])
+
   return (
     <div className="page-shell">
       <header className="topbar">
-        <div>
-          <p className="eyebrow">Portfolio</p>
-          <p className="topbar-label">Zain Tamer Zain ElAbdin</p>
-        </div>
+        <Link className="topbar-brand" to="/" aria-label="Zain Tamer — Home">
+          <span className="topbar-monogram" aria-hidden="true">ZT</span>
+          <span className="topbar-identity">
+            <span className="topbar-label">Zain Tamer</span>
+            <span className="topbar-role">AI engineer · Software developer</span>
+          </span>
+        </Link>
         <nav className="nav" aria-label="Primary">
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>Home</NavLink>
           <NavLink to="/projects" className={({ isActive }) => (isActive ? 'active' : undefined)}>Projects</NavLink>
           <NavLink to="/research" className={({ isActive }) => (isActive ? 'active' : undefined)}>Research</NavLink>
-          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : undefined)}>About</NavLink>
+          <NavLink to="/volunteering" className={({ isActive }) => (isActive ? 'active' : undefined)}>Volunteering</NavLink>
           <NavLink to="/certificates" className={({ isActive }) => (isActive ? 'active' : undefined)}>Certificates</NavLink>
+          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : undefined)}>About</NavLink>
           <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : undefined)}>Contact</NavLink>
         </nav>
       </header>
       <main className="content">{children}</main>
       <footer className="site-footer">
-        <div>
-          <p className="footer-name">Zain Tamer Zain ElAbdin</p>
-          <p className="footer-role">AI Engineer</p>
+        <div className="footer-intro">
+          <p className="footer-label">Let’s build something meaningful</p>
+          <p className="footer-name">Ideas, engineered into useful products.</p>
+          <p className="footer-role">AI Engineer & Software Developer based in Alexandria, Egypt.</p>
+          <Link className="footer-contact-link" to="/contact">Start a conversation <span aria-hidden="true">↗</span></Link>
         </div>
-        <div>
-          <p className="footer-label">Address</p>
-          <p>Alexandria, Egypt</p>
+        <div className="footer-links">
+          <div>
+            <p className="footer-label">Explore</p>
+            <Link to="/projects">Projects</Link>
+            <Link to="/research">Research</Link>
+            <Link to="/volunteering">Volunteering</Link>
+          </div>
+          <div>
+            <p className="footer-label">Connect</p>
+            <a href="https://linkedin.com/in/zaintamer" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="https://github.com/Zain3627" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="mailto:zaintamer10@gmail.com">Email</a>
+          </div>
         </div>
-        <div>
-          <p className="footer-label">Contact</p>
-          <p>zaintamer10@gmail.com</p>
-          <p>+20 109 433 2424</p>
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} Zain Tamer</p>
+          <p>Learning deeply. Building thoughtfully. Sharing openly.</p>
         </div>
       </footer>
       <Link
@@ -889,62 +1064,97 @@ function ChatPage() {
 
   return (
     <div className="chat-page">
-      {/* Header card */}
       <div className="chat-header-card">
-        <div className="chat-header-avatar">Z</div>
-        <div>
-          <p className="chat-header-name">Zain</p>
-          <p className="chat-header-status">
-            <span className="status-dot" aria-hidden="true" />
-            Online
-          </p>
+        <div className="chat-header-copy">
+          <p className="eyebrow">Portfolio assistant</p>
+          <h1>Ask beyond the résumé.</h1>
+          <p>Explore the thinking, tools, and stories behind my work.</p>
+        </div>
+        <div className="chat-agent-card">
+          <img className="chat-header-avatar" src={chatBotAvatar} alt="Zain's AI assistant" />
+          <div>
+            <p className="chat-header-name">Zain’s AI guide</p>
+            <p className="chat-header-status">
+              <span className="status-dot" aria-hidden="true" />
+              Ready to help
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
-        {messages.map(msg =>
-          msg.role === 'bot' ? (
-            <div key={msg.id} className="msg-row bot">
-              <div className="chat-avatar" aria-hidden="true">Z</div>
-              <div className={`bubble bot${msg.error ? ' bubble-error' : ''}`}>
-                {msg.error && <span className="error-icon" aria-label="Error">⚠ </span>}
-                {msg.content}
-              </div>
-            </div>
-          ) : (
-            <div key={msg.id} className="msg-row user">
-              <div className="chat-avatar user-avatar" aria-hidden="true">U</div>
-              <div className="bubble user">{msg.content}</div>
-            </div>
-          )
-        )}
-
-        {loading && <TypingIndicator />}
-        <div ref={bottomRef} />
+      <div className="chat-suggestions" aria-label="Suggested questions">
+        <span>Try asking</span>
+        {[
+          'Which project best shows your AI skills?',
+          'What are you researching now?',
+          'Tell me about your volunteering.',
+        ].map(prompt => (
+          <button key={prompt} type="button" onClick={() => {
+            setInput(prompt)
+            inputRef.current?.focus()
+          }}>
+            {prompt}
+          </button>
+        ))}
       </div>
 
-      {/* Input */}
-      <div className="chat-input-row">
-        <input
-          ref={inputRef}
-          className="chat-input"
-          type="text"
-          placeholder="Type a message…"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={loading}
-          aria-label="Message input"
-        />
-        <button
-          className="chat-send-btn"
-          onClick={sendMessage}
-          disabled={loading || !input.trim()}
-          aria-label="Send message"
-        >
-          ➤
-        </button>
+      <div className="chat-window">
+        <div className="chat-window-bar">
+          <div aria-hidden="true">
+            <span className="chat-window-dot" />
+            <span className="chat-window-dot" />
+            <span className="chat-window-dot" />
+          </div>
+          <p>Conversation with portfolio assistant</p>
+          <span className="chat-window-badge">AI</span>
+        </div>
+
+        <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
+          {messages.map(msg =>
+            msg.role === 'bot' ? (
+              <div key={msg.id} className="msg-row bot">
+                <img className="chat-avatar" src={chatBotAvatar} alt="" aria-hidden="true" />
+                <div className={`bubble bot${msg.error ? ' bubble-error' : ''}`}>
+                  {msg.error && <span className="error-icon" aria-label="Error">⚠ </span>}
+                  {msg.content}
+                </div>
+              </div>
+            ) : (
+              <div key={msg.id} className="msg-row user">
+                <div className="chat-avatar user-avatar" aria-hidden="true">You</div>
+                <div className="bubble user">{msg.content}</div>
+              </div>
+            )
+          )}
+
+          {loading && <TypingIndicator />}
+          <div ref={bottomRef} />
+        </div>
+
+        <div className="chat-input-row">
+          <input
+            ref={inputRef}
+            className="chat-input"
+            type="text"
+            placeholder="Ask about a project, skill, or experience…"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={loading}
+            maxLength={MAX_CHAT_MESSAGE_LENGTH}
+            aria-label="Message input"
+          />
+          <span className="chat-character-count">{input.length}/{MAX_CHAT_MESSAGE_LENGTH}</span>
+          <button
+            className="chat-send-btn"
+            onClick={sendMessage}
+            disabled={loading || !input.trim()}
+            aria-label="Send message"
+          >
+            <span>Send</span>
+            <span aria-hidden="true">↗</span>
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -955,62 +1165,146 @@ function HomePage() {
     <SiteLayout>
       <section className="page page--home">
         <div className="home-layout">
-          <div className="home-hero-grid">
-            <article className="home-hero-copy">
-              <h2 className="hero-name">Zain Tamer Zain ElAbdin</h2>
-              <p className="hero-role">AI Engineer & Researcher • ML • NLP • Computer Vision • MLOps</p>
-              <h3>Production-minded AI with strong algorithmic thinking.</h3>
-              <p className="hero-summary">
-                I build practical AI systems with a focus on model training, data pipelines, deployment, and clean
-                problem solving. My work combines machine learning, computer vision, cloud deployment, and competitive
-                programming thinking.
+          <section className="home-hero">
+            <div className="home-hero-copy">
+              <p className="home-kicker"><span aria-hidden="true" /> Hello, I’m Zain.</p>
+              <h1 className="home-display">I turn deep curiosity into <em>software that works.</em></h1>
+              <p className="home-roles">AI Engineer <span>·</span> Software Developer <span>·</span> Researcher</p>
+              <p className="home-introduction">
+                I build intelligent and reliable software—from machine-learning pipelines and computer-vision systems to cloud-deployed applications. Competitive programming sharpens how I solve problems; research deepens how I understand them; volunteering reminds me to bring others along.
               </p>
 
-              {/* <div className="home-usp-card">
-                <h3>Production-minded AI with strong algorithmic thinking.</h3>
+              <div className="home-difference">
+                <p className="card-label">Different disciplines. One way of thinking.</p>
                 <p>
-                  I build practical AI systems with a focus on model training, data pipelines, deployment, and clean
-                problem solving. My work combines machine learning, computer vision, cloud deployment, and competitive
-                programming thinking.
+                  Competitive programming teaches me precision. Research keeps me curious. Software engineering turns ideas into reliable solutions. Teaching reminds me that knowledge matters most when it helps others grow.
                 </p>
-              </div> */}
+              </div>
 
-              <div className="home-education-card">
-                <p className="card-label">Education summary</p>
-                <div className="education-line">
-                  <strong>Arab Academy for Science, Technology & Maritime Transport University</strong>
+              <div className="cta-row home-actions">
+                <NavLink className="button button--primary" to="/projects">Explore my work</NavLink>
+                <NavLink className="button" to="/about">More about me</NavLink>
+                <a className="button" href={cvUrl} target="_blank" rel="noreferrer">Open CV ↗</a>
+              </div>
+            </div>
+
+            <aside className="home-portrait-column">
+              <div className="home-portrait">
+                <img src={profilePhoto} alt="Zain Tamer Zain ElAbdin" />
+                <div className="home-location-badge">
+                  <span aria-hidden="true">●</span>
+                  Alexandria, Egypt
                 </div>
-                <div className="education-metrics">
-                  <span>CGPA: 3.98/4.0</span>
-                  <span>Expected graduation: February 2027</span>
+              </div>
+              <div className="home-now-card">
+                <span className="home-now-dot" aria-hidden="true" />
+                <div>
+                  <p className="card-label">Final semester</p>
+                  <strong>Completing my Computer Engineering degree and preparing for graduation.</strong>
                 </div>
-              </div>
-
-              <div className="cta-row">
-                <NavLink className="button button--primary" to="/projects">
-                  View projects
-                </NavLink>
-                <a className="button" href={cvUrl} target="_blank" rel="noreferrer">
-                  Open CV
-                </a>
-              </div>
-            </article>
-
-            <aside className="home-hero-side">
-              <div className="hero-photo-frame hero-photo-frame--large">
-                <img src={profilePhoto} alt="Zain Tamer Zain ElAbdin profile photo" />
-              </div>
-
-              <div className="home-status-card">
-                <p className="card-label">Current focus</p>
-                <ul className="bullet-list">
-                  <li>Machine learning systems with production quality.</li>
-                  <li>Computer vision workflows and deployment.</li>
-                  <li>Cloud delivery on AWS and Azure.</li>
-                </ul>
               </div>
             </aside>
-          </div>
+          </section>
+
+          <section className="home-proof" aria-label="Selected achievements">
+            <div><strong>3.98</strong><span>CGPA / 4.0</span></div>
+            <div><strong>#2</strong><span>in my university class</span></div>
+            <div><strong>Specialist</strong><span>Codeforces · 1448 rating</span></div>
+            <div><strong>Finalist</strong><span>2026 ECPC</span></div>
+          </section>
+
+          <section className="home-current" aria-labelledby="home-current-title">
+            <div className="home-current-heading">
+              <p className="eyebrow">Currently exploring</p>
+              <h2 id="home-current-title">Finishing one chapter. Actively shaping the next.</h2>
+              <p>
+                I am in my final university semester, bringing together years of study, experimentation, competition, and community work as I prepare for graduation.
+              </p>
+            </div>
+            <div className="home-current-grid">
+              <article>
+                <span>01</span>
+                <div><h3>AI research</h3><p>Building a public GitHub research project that investigates, reproduces, and analyzes influential and fast-moving AI papers.</p></div>
+              </article>
+              <article>
+                <span>02</span>
+                <div><h3>Industry opportunity</h3><p>Seeking an AI or software engineering role where I can turn ideas into dependable solutions and learn alongside industry innovators.</p></div>
+              </article>
+              <article>
+                <span>03</span>
+                <div><h3>Graduate study</h3><p>Exploring AI master’s programs that will let me deepen my research foundations and contribute to meaningful advances in the field.</p></div>
+              </article>
+              <article>
+                <span>04</span>
+                <div><h3>Graduation</h3><p>Completing my final semester in Computer Engineering and preparing to graduate in February 2027.</p></div>
+              </article>
+            </div>
+          </section>
+
+          <section className="home-journey" aria-labelledby="home-journey-title">
+            <div className="home-section-heading">
+              <p className="eyebrow">My journey</p>
+              <h2 id="home-journey-title">From mathematical curiosity to intelligent systems.</h2>
+              <p>Each stage added a different dimension to the engineer I am becoming.</p>
+            </div>
+            <div className="home-timeline">
+              <article>
+                <p className="home-timeline-date">2019–2022</p>
+                <span aria-hidden="true" />
+                <h3>Foundations</h3>
+                <p>Studied at Gharbiya STEM, explored advanced mathematics and mechanics, and founded M2C to help other students learn.</p>
+              </article>
+              <article>
+                <p className="home-timeline-date">2022–Present</p>
+                <span aria-hidden="true" />
+                <h3>Computer Engineering</h3>
+                <p>Built foundations across algorithms, software systems, embedded engineering, data, and AI while ranking second in my class.</p>
+              </article>
+              <article>
+                <p className="home-timeline-date">2024–2026</p>
+                <span aria-hidden="true" />
+                <h3>Building & Competing</h3>
+                <p>Developed end-to-end AI and software projects, reached Codeforces Specialist, and advanced to the ECPC finals.</p>
+              </article>
+              <article>
+                <p className="home-timeline-date">Now</p>
+                <span aria-hidden="true" />
+                <h3>Research & Impact</h3>
+                <p>Analyzing influential AI research, teaching technical communities, and looking for the team where I can build what comes next.</p>
+              </article>
+            </div>
+          </section>
+
+
+          <section className="home-paths" aria-labelledby="home-paths-title">
+            <div className="home-section-heading">
+              <p className="eyebrow">Explore</p>
+              <h2 id="home-paths-title">Choose a side of my story.</h2>
+            </div>
+            <div className="home-path-grid">
+              <Link to="/projects" className="home-path-card">
+                <span className="home-path-number">01</span>
+                <p className="card-label">Build</p>
+                <h3>Projects</h3>
+                <p>AI systems, software applications, embedded work, and cloud-deployed products.</p>
+                <strong>See what I build →</strong>
+              </Link>
+              <Link to="/research" className="home-path-card">
+                <span className="home-path-number">02</span>
+                <p className="card-label">Investigate</p>
+                <h3>Research</h3>
+                <p>Paper analysis, controlled experiments, reproduction, and evidence-led technical inquiry.</p>
+                <strong>See how I think →</strong>
+              </Link>
+              <Link to="/volunteering" className="home-path-card">
+                <span className="home-path-number">03</span>
+                <p className="card-label">Give back</p>
+                <h3>Volunteering</h3>
+                <p>Teaching, mentoring, workshops, and communities built around shared curiosity.</p>
+                <strong>See how I contribute →</strong>
+              </Link>
+            </div>
+          </section>
 
           <section className="skills-marquee" aria-label="Skills moving bar">
             <div className="skills-marquee__track">
@@ -1049,13 +1343,34 @@ function ProjectsPage() {
   return (
     <SiteLayout>
       <section className="page page--projects">
-        <SectionHeader
-          eyebrow="Projects"
-          title="Featured Projects"
-          description="A selection of projects highlighting my work in AI, machine learning, cloud computing, and software engineering, with an emphasis on real-world applications and production-ready solutions. Click any project to see the full story — the problem, how it was built, and what came out of it."
-        />
+        <header className="projects-hero">
+          <div className="projects-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> Projects</p>
+            <h1>Ideas become valuable when they become <em>working systems.</em></h1>
+            <p>From AI pipelines and cloud applications to embedded systems and networking, these projects show how I move from problem definition to implementation and delivery.</p>
+          </div>
+          <aside className="projects-map" aria-label="Project disciplines">
+            <p className="card-label">My engineering range</p>
+            <div className="projects-map-core">Build</div>
+            <span className="projects-map-node projects-map-node--ai">AI</span>
+            <span className="projects-map-node projects-map-node--software">Software</span>
+            <span className="projects-map-node projects-map-node--cloud">Cloud</span>
+            <span className="projects-map-node projects-map-node--systems">Systems</span>
+          </aside>
+        </header>
+
+        <div className="projects-snapshot" aria-label="Projects overview">
+          <div><strong>{projects.length}</strong><span>documented builds</span></div>
+          <div><strong>AI + SW</strong><span>models through applications</span></div>
+          <div><strong>End to end</strong><span>from idea to deployment</span></div>
+        </div>
+
+        <div className="projects-section-heading">
+          <p className="eyebrow">Selected work</p>
+          <h2>Explore the systems behind the outcomes.</h2>
+        </div>
         <div className="project-grid">
-          {projects.map((project) => {
+          {projects.map((project, index) => {
             const slug = slugify(project.title)
             return (
               <article
@@ -1068,6 +1383,7 @@ function ProjectsPage() {
                   if (e.key === "Enter") navigate(`/projects/${slug}`)
                 }}
               >
+                <span className="project-card-index">0{index + 1}</span>
                 {project.media?.[0] && (
                   <div className="project-card-media">
                     <img
@@ -1078,6 +1394,7 @@ function ProjectsPage() {
                   </div>
                 )}
                 <div className="project-card-body">
+                  <p className="card-label">{project.subtitle}</p>
                   <div className="project-card-heading">
                     <h3>{project.title}</h3>
                     {project.date && <span className="project-card-date">{project.date}</span>}
@@ -1111,6 +1428,11 @@ function ProjectsPage() {
             )
           })}
         </div>
+
+        <section className="projects-closing">
+          <div><p className="eyebrow">Build with me</p><h2>Have a problem worth turning into a reliable product?</h2></div>
+          <Link className="button button--primary" to="/contact">Start a conversation</Link>
+        </section>
       </section>
     </SiteLayout>
   )
@@ -1240,78 +1562,91 @@ function ProjectDetailPage() {
   )
 }
 
+function ResearchVisual({ type }: { type: ResearchItem['visual'] }) {
+  if (type === 'papers') {
+    return (
+      <div className="research-visual research-visual--papers" aria-label="Paper research workflow illustration">
+        <span className="paper-node paper-node--one">Read</span>
+        <span className="paper-node paper-node--two">Question</span>
+        <div className="paper-core"><strong>AI</strong><small>Research</small></div>
+        <span className="paper-node paper-node--three">Reproduce</span>
+        <span className="paper-node paper-node--four">Explain</span>
+      </div>
+    )
+  }
+
+  if (type === 'vision') {
+    return (
+      <div className="research-visual research-visual--vision" aria-label="Image augmentation experiment illustration">
+        <div className="vision-sample vision-sample--one"><span /></div>
+        <div className="vision-sample vision-sample--two"><span /></div>
+        <div className="vision-sample vision-sample--three"><span /></div>
+        <div className="vision-controls">
+          <p><span>Augmentation</span><i style={{ width: '76%' }} /></p>
+          <p><span>Hyperparameters</span><i style={{ width: '58%' }} /></p>
+          <p><span>Generalization</span><i style={{ width: '88%' }} /></p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="research-visual research-visual--algorithms" aria-label="Algorithm benchmark illustration">
+      <div className="algorithm-track"><span>Quicksort</span><i style={{ width: '78%' }} /><small>randomized</small></div>
+      <div className="algorithm-track"><span>BFPRT</span><i style={{ width: '61%' }} /><small>deterministic</small></div>
+      <div className="algorithm-complexity"><span>Selection</span><strong>k-th</strong><small>theory ↔ runtime</small></div>
+    </div>
+  )
+}
+
 function ResearchPage() {
   return (
     <SiteLayout>
       <section className="page page--research">
-        <SectionHeader
-          eyebrow="Research"
-          title="Research Projects & Technical Investigations"
-          description="I enjoy understanding why models work—not just how to use them. My work focuses on reproducing published research, designing controlled experiments, and evaluating machine learning systems through empirical analysis."
-        />
+        <header className="research-hero">
+          <div className="research-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> Research</p>
+            <h1>I don’t stop at what works. <em>I investigate why.</em></h1>
+            <p>My research connects careful reading with controlled experiments, reproduction, and honest evaluation.</p>
+          </div>
+          <aside className="research-loop" aria-label="Research process">
+            <p className="card-label">My research loop</p>
+            <div className="research-loop-track">
+              <span><strong>01</strong>Read</span><i>→</i>
+              <span><strong>02</strong>Question</span><i>→</i>
+              <span><strong>03</strong>Test</span><i>→</i>
+              <span><strong>04</strong>Explain</span>
+            </div>
+          </aside>
+        </header>
 
-        <div className="research-stack">
-          {researchItems.map((item) => (
-            <article key={item.title} className="info-card info-card--research">
-              <div className="project-meta">
-                <span>{item.date}</span>
-                <span>Research Project</span>
-              </div>
 
-              <h3>{item.title}</h3>
-
-              <p>{item.summary}</p>
-
-              {item.contributions && item.contributions.length > 0 && (
-                <div className="research-contributions">
-                  <h4 className="research-subtitle">
-                    Key Contributions
-                  </h4>
-
-                  <ul className="takeaway-list">
-                    {item.contributions.map((contribution) => (
-                      <li
-                        key={contribution}
-                        className="takeaway-item"
-                      >
-                        <span className="takeaway-icon">✓</span>
-                        <span>{contribution}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="timeline-coursework">
-                <p className="timeline-coursework-label">
-                  Technologies & Skills
-                </p>
-
-                <ul className="chip-row">
-                  {item.skills.map((skill) => (
-                    <li
-                      key={skill}
-                      className="chip chip--soft"
-                    >
-                      {skill}
-                    </li>
-                  ))}
+        <div className="research-grid">
+          {researchItems.map((item, index) => (
+            <article key={item.title} className={`research-card${index === 0 ? ' research-card--featured' : ''}`}>
+              <ResearchVisual type={item.visual} />
+              <div className="research-card-content">
+                <div className="research-meta"><span>{item.date}</span><span>{index === 0 ? 'Living Repository' : 'Experimental Study'}</span></div>
+                <p className="research-index">0{index + 1}</p>
+                <h2>{item.title}</h2>
+                <p className="research-tagline">{item.tagline}</p>
+                <ul className="research-highlights">
+                  {item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
                 </ul>
+                <ul className="chip-row research-skills">
+                  {item.skills.slice(0, 4).map((skill) => <li key={skill} className="chip chip--soft">{skill}</li>)}
+                  {item.skills.length > 4 && <li className="chip chip--soft">+{item.skills.length - 4}</li>}
+                </ul>
+                {item.github && <a href={item.github} target="_blank" rel="noopener noreferrer" className="research-repo-link">Explore repository <span>↗</span></a>}
               </div>
-
-              {item.github && (
-                <a
-                  href={item.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="github-button"
-                >
-                  View Repository →
-                </a>
-              )}
             </article>
           ))}
         </div>
+
+        <section className="research-closing">
+          <div><p className="eyebrow">Ongoing inquiry</p><h2>Read critically. Test carefully. Explain clearly.</h2></div>
+          <a href="https://github.com/Zain3627/ai-research-summary" target="_blank" rel="noopener noreferrer" className="button button--primary">Follow the research ↗</a>
+        </section>
       </section>
     </SiteLayout>
   )
@@ -1321,97 +1656,293 @@ function AboutPage() {
   return (
     <SiteLayout>
       <section className="page page--about">
-        <SectionHeader
-          eyebrow="About"
-          title=""
-          description=''
-        />
-        <h1 className="hero-name"> Zain Tamer Zain ElAbdin </h1>
+        <header className="about-hero">
+          <div className="about-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> About me</p>
+            <h1>Curiosity has always been my <em>starting point.</em></h1>
+            <p className="about-role">AI Engineer · Software Developer · Researcher</p>
+            <p className="about-lead">
+              I am Zain, a final-semester Computer Engineering student who enjoys understanding difficult ideas and turning them into dependable software. My work moves between AI research, end-to-end engineering, competitive problem-solving, and teaching others what I learn.
+            </p>
+            <div className="about-hero-actions">
+              <Link className="button button--primary" to="/projects">Explore my work</Link>
+              <Link className="button" to="/contact">Let’s connect</Link>
+            </div>
+          </div>
 
+          <aside className="about-portrait-wrap" aria-label="Zain's disciplines">
+            <div className="about-portrait">
+              <img src={profilePhoto} alt="Zain Tamer Zain ElAbdin" />
+            </div>
+            <span className="about-orbit about-orbit--build">Build</span>
+            <span className="about-orbit about-orbit--research">Research</span>
+            <span className="about-orbit about-orbit--share">Share</span>
+          </aside>
+        </header>
 
-        <div className="about-intro">
-          <p>
-            Computer Engineering student at AAST specializing in machine learning, computer vision, and MLOps — with hands-on experience shipping production AI systems on AWS and Azure. Years of competitive programming shaped an algorithmic rigor that runs through every architecture and system design decision. Equally invested in people as in code: teaching, mentoring, and building as part of a team matter as much as the technical craft itself. Current research interests center on large language models and NLP — specifically how these systems can be grounded, adapted, and deployed reliably in production.
-          </p>
-        </div>
+        <section className="about-snapshot" aria-label="At a glance">
+          <div><strong>3.98</strong><span>CGPA / 4.0</span></div>
+          <div><strong>#2</strong><span>in my class</span></div>
+          <div><strong>Specialist</strong><span>Codeforces</span></div>
+          <div><strong>Finalist</strong><span>ECPC 2026</span></div>
+        </section>
 
-        <div className="about-section">
-          <h2 className="about-section-title">Education</h2>
-          <div className="timeline">
-            {educationTimeline.map((entry) => (
-              <div key={entry.institution} className="timeline-item">
-                <div className="timeline-marker">
-                  <img src={entry.logo} alt={`${entry.institution} logo`} />
-                </div>
-                <div className="timeline-content">
-                  <p className="timeline-date">
-                    {entry.start} — {entry.end}
-                  </p>
-                  <h3>{entry.institution}</h3>
-                  <p className="timeline-degree">{entry.degree}</p>
-                  <p>{entry.description}</p>
+        <section className="about-story" aria-labelledby="about-story-title">
+          <div className="about-section-heading">
+            <p className="eyebrow">My story</p>
+            <h2 id="about-story-title">One curiosity, three transformations.</h2>
+          </div>
+          <div className="about-story-grid">
+            <article>
+              <span className="about-story-icon" aria-hidden="true">π</span>
+              <p className="card-label">01 · Explore</p>
+              <h3>Curiosity began with mathematics.</h3>
+              <p>At Gharbiya STEM, advanced mathematics, mechanics, and extended research taught me to enjoy going beyond the expected answer.</p>
+            </article>
+            <article>
+              <span className="about-story-icon" aria-hidden="true">{'</>'}</span>
+              <p className="card-label">02 · Engineer</p>
+              <h3>Problem-solving became software.</h3>
+              <p>Computer Engineering and competitive programming gave that curiosity structure: algorithms, architecture, implementation, and systems that must actually work.</p>
+            </article>
+            <article>
+              <span className="about-story-icon" aria-hidden="true">AI</span>
+              <p className="card-label">03 · Create impact</p>
+              <h3>Engineering expanded into intelligence.</h3>
+              <p>AI, cloud deployment, research, and teaching now let me turn ideas into useful products—and help other people grow alongside me.</p>
+            </article>
+          </div>
+        </section>
 
-                  {entry.takeaways && entry.takeaways.length > 0 && (
-  <div className="timeline-takeaways">
-    <p className="timeline-takeaways-label">Key Takeaways</p>
+        <section className="about-strengths" aria-labelledby="about-strengths-title">
+          <div className="about-section-heading">
+            <p className="eyebrow">What I bring</p>
+            <h2 id="about-strengths-title">A combination built across different arenas.</h2>
+          </div>
+          <div className="about-strength-grid">
+            <article><span>01</span><h3>Algorithmic rigor</h3><p>Codeforces Specialist and ECPC finalist experience sharpen how I reason under constraints.</p></article>
+            <article><span>02</span><h3>Research curiosity</h3><p>I investigate and reproduce influential AI papers instead of treating models as black boxes.</p></article>
+            <article><span>03</span><h3>End-to-end engineering</h3><p>I connect models with APIs, applications, data pipelines, and deployment on AWS and Azure.</p></article>
+            <article><span>04</span><h3>Collaborative leadership</h3><p>Coaching, workshops, and team projects taught me to communicate clearly and bring people together.</p></article>
+          </div>
+        </section>
 
-    <ul className="takeaway-list">
-      {entry.takeaways.map((item) => (
-        <li key={item} className="takeaway-item">
-          <span className="takeaway-icon">✓</span>
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+        <section className="about-soft-skills" aria-labelledby="about-soft-skills-title">
+          <div className="about-section-heading about-soft-heading">
+            <div>
+              <p className="eyebrow">Human skills · backed by evidence</p>
+              <h2 id="about-soft-skills-title">Not traits I claim. Patterns my journey proves.</h2>
+            </div>
+            <p>Each quality grew through a real transition, responsibility, or shared challenge.</p>
+          </div>
 
-                  {entry.coursework && entry.coursework.length > 0 && (
-                    <div className="timeline-coursework">
-                      <p className="timeline-coursework-label">Relevant coursework</p>
-                      <ul className="chip-row">
-                        {entry.coursework.map((course) => (
-                          <li key={course} className="chip">
-                            {course}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {entry.transcriptUrl && (
-  
-                  <a  href={entry.transcriptUrl}
-                    download="unofficial-transcript.pdf"
-                    className="github-button"
-                  >
-                    Download unofficial transcript ↓
-                  </a>
-                )}
+          <div className="about-soft-grid">
+            <article className="about-soft-card about-soft-card--discipline">
+              <div className="about-soft-marker"><span>01</span><strong>↗</strong></div>
+              <div className="about-soft-content">
+                <p className="card-label">Independence → consistency</p>
+                <h3>Discipline & self-management</h3>
+                <p>I entered boarding school at 15 and later learned to manage university life while living independently. New responsibilities never displaced the academic standard I set for myself.</p>
+                <div className="about-soft-proof">
+                  <strong>3.98 / 4.0</strong>
+                  <span>CGPA maintained while ranking second in my university class</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </article>
 
-        <div className="about-section">
-          <h2 className="about-section-title">Volunteering</h2>
-          <div className="volunteer-grid">
-            {volunteerExperiences.map((entry, index) => (
-              <article key={`${entry.organization}-${index}`} className="volunteer-card">
-                <div className="volunteer-card-logo">
-                  <img src={entry.logo} alt={`${entry.organization} logo`} />
+            <article className="about-soft-card about-soft-card--adaptability">
+              <div className="about-soft-marker"><span>02</span><strong>⌁</strong></div>
+              <div className="about-soft-content">
+                <p className="card-label">Change → growth</p>
+                <h3>Flexibility & adaptability</h3>
+                <p>Moving away from home early taught me how to read a new environment, build routines, connect with different people, and keep progressing without waiting for perfect conditions.</p>
+                <div className="about-soft-proof">
+                  <strong>Age 15</strong>
+                  <span>First major transition into independent boarding-school life</span>
                 </div>
-                <p className="timeline-date">
-                  {entry.start} — {entry.end}
-                </p>
-                <h3>{entry.organization}</h3>
-                <p className="volunteer-role">{entry.role}</p>
-                <p>{entry.description}</p>
+              </div>
+            </article>
+
+            <article className="about-soft-card about-soft-card--leadership">
+              <div className="about-soft-marker"><span>03</span><strong>◎</strong></div>
+              <div className="about-soft-content">
+                <p className="card-label">Knowledge → community</p>
+                <h3>Leadership through service</h3>
+                <p>I began by founding M2C in high school, then carried that instinct into competitive-programming coaching and AWS workshops—creating the structure that helps others learn.</p>
+                <div className="about-soft-proof">
+                  <strong>16+ sessions</strong>
+                  <span>Coaching experience alongside workshops and organized hackathons</span>
+                </div>
+                <Link className="about-soft-link" to="/volunteering">See the volunteering evidence <span aria-hidden="true">↗</span></Link>
+              </div>
+            </article>
+
+            <article className="about-soft-card about-soft-card--teamwork">
+              <div className="about-soft-marker"><span>04</span><strong>∞</strong></div>
+              <div className="about-soft-content">
+                <p className="card-label">Pressure → collaboration</p>
+                <h3>Communication & teamwork</h3>
+                <p>ECPC contests taught me to align decisions quickly with teammates; tutoring and technical workshops taught me to explain the same difficult idea in ways different minds can understand.</p>
+                <div className="about-soft-proof">
+                  <strong>ECPC finalist</strong>
+                  <span>Team problem-solving under time pressure, supported by years of teaching</span>
+                </div>
+                <Link className="about-soft-link" to="/certificates">View supporting milestones <span aria-hidden="true">↗</span></Link>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section className="about-education" aria-labelledby="about-education-title">
+          <div className="about-section-heading">
+            <p className="eyebrow">Education</p>
+            <h2 id="about-education-title">The environments that shaped me.</h2>
+          </div>
+          <div className="about-education-grid">
+            {educationTimeline.map((entry) => (
+              <article key={entry.institution} className="about-education-card">
+                <div className="about-education-header">
+                  <div className="about-school-logo"><img src={entry.logo} alt={`${entry.institution} logo`} /></div>
+                  <div>
+                    <p className="timeline-date">{entry.start} — {entry.end}</p>
+                    <h3>{entry.institution}</h3>
+                    <p className="timeline-degree">{entry.degree}</p>
+                  </div>
+                </div>
+                <p className="about-education-description">{entry.description}</p>
+                <ul className="about-outcome-list">
+                  {entry.takeaways.slice(0, 3).map((item) => <li key={item}>{item}</li>)}
+                </ul>
+                {entry.coursework && entry.coursework.length > 0 && (
+                  <details className="about-coursework">
+                    <summary>View relevant coursework <span aria-hidden="true">+</span></summary>
+                    <ul className="chip-row">
+                      {entry.coursework.map((course) => <li key={course} className="chip chip--soft">{course}</li>)}
+                    </ul>
+                  </details>
+                )}
+                {entry.transcriptUrl && (
+                  <a href={entry.transcriptUrl} download="unofficial-transcript.pdf" className="github-button">Download unofficial transcript ↓</a>
+                )}
               </article>
             ))}
           </div>
+        </section>
+
+        <section className="about-closing">
+          <div><p className="eyebrow">What comes next</p><h2>I am ready to keep learning—and build work that matters.</h2></div>
+          <Link className="button button--primary" to="/contact">Start a conversation</Link>
+        </section>
+      </section>
+    </SiteLayout>
+  )
+}
+
+function VolunteeringPage() {
+  return (
+    <SiteLayout>
+      <section className="page page--volunteering">
+        <header className="volunteering-hero">
+          <div className="volunteering-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> Volunteering</p>
+            <h1>Knowledge grows when it is <em>shared forward.</em></h1>
+            <p>I love studying difficult ideas, but their greatest value appears when they help someone else grow. Teaching has become the bridge between my curiosity and my community.</p>
+          </div>
+          <aside className="volunteering-cycle" aria-label="Volunteering philosophy">
+            <p className="card-label">How knowledge travels</p>
+            <div><span>01</span><strong>Learn deeply</strong></div>
+            <i aria-hidden="true">→</i>
+            <div><span>02</span><strong>Explain clearly</strong></div>
+            <i aria-hidden="true">→</i>
+            <div><span>03</span><strong>Multiply impact</strong></div>
+          </aside>
+        </header>
+
+        <article className="volunteering-origin">
+          <div className="volunteering-origin-heading">
+            <p className="card-label">Where it started · High school</p>
+            <h3>M2C — Mathematics & Mechanics Club</h3>
+            <p className="volunteering-origin-lead">
+              A personal love of studying became my first experience building a learning community.
+            </p>
+          </div>
+
+          <div className="volunteering-origin-story">
+            <p>
+              At Gharbiya STEM High School, I was deeply drawn to mathematics and mechanics. I went beyond the syllabus, explored advanced topics, and carried out extended research. After standing out academically among a school of top students, I approached a teacher with an idea: create a club for students who shared the same passion and wanted to use it to help others.
+            </p>
+            <p>
+              That idea became <strong>M2C</strong>. We brought together curious students, ran tutoring sessions for classmates struggling with difficult topics, prepared clear explanation resources, and built solved test banks from international competitions and examinations. Those materials continued helping younger students after we graduated—a lasting reminder that one useful resource can travel much further than its creator.
+            </p>
+          </div>
+
+          {/* <div className="volunteering-origin-lessons">
+            <div><span>01</span><strong>Learn deeply</strong><p>Go beyond the curriculum and keep asking why.</p></div>
+            <div><span>02</span><strong>Bring people together</strong><p>Find others who share the curiosity and give it a home.</p></div>
+            <div><span>03</span><strong>Leave something useful</strong><p>Turn understanding into resources that continue helping others.</p></div>
+          </div> */}
+
+          <p className="volunteering-origin-reflection">
+            Starting M2C at a young age taught me leadership, communication, and teamwork—but its most important lesson was simpler: contributing to the environment around me is part of learning, not something separate from it.
+          </p>
+        </article>
+
+        <div className="volunteering-section-heading">
+          <p className="eyebrow">Continuing the journey</p>
+          <h2>How I contribute today</h2>
+          <p>M2C shaped the mindset. These communities give me new ways to keep practicing it.</p>
         </div>
+
+        <div className="volunteering-grid">
+          {communityContributions.map((entry) => (
+            <article key={entry.organization} className="volunteering-card">
+              <div className="volunteering-card-header">
+                <div className="volunteering-card-logo">
+                  <img src={entry.logo} alt={`${entry.organization} logo`} />
+                </div>
+                <div>
+                  <p className="timeline-date">{entry.start} — {entry.end}</p>
+                  <h3>{entry.organization}</h3>
+                  <p className="volunteering-role">{entry.role}</p>
+                </div>
+              </div>
+              <p className="volunteering-description">{entry.description}</p>
+
+              <div className="volunteering-card-body">
+                <div className="volunteering-impact">
+                  <p className="card-label">What I contributed</p>
+                  <ul className="takeaway-list">
+                    {entry.contributions.map((contribution) => (
+                      <li key={contribution} className="takeaway-item">
+                        <span className="takeaway-icon">✓</span>
+                        <span>{contribution}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="volunteering-gallery">
+                  {entry.media.map((media, index) => (
+                    <figure key={media.label} className={`volunteering-photo volunteering-photo--${index + 1}`}>
+                      <img
+                        src={media.src}
+                        alt={media.label}
+                        loading="lazy"
+                        className={media.fit === 'contain' ? 'is-contained' : undefined}
+                      />
+                      <figcaption>{media.label}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <section className="volunteering-closing">
+          <div><p className="eyebrow">The principle remains</p><h2>Learn deeply, then make the path clearer for someone else.</h2></div>
+          <Link className="button button--primary" to="/contact">Connect with me</Link>
+        </section>
       </section>
     </SiteLayout>
   )
@@ -1421,20 +1952,48 @@ function CertificatesPage() {
   return (
     <SiteLayout>
       <section className="page page--certificates">
-        <SectionHeader
-          eyebrow="Certificates"
-          title="Certificates & Achievements"
-          description="Certifications and accomplishments that document my growth as an AI and software engineer through industry training, competitions, and practical project experience."
-        />
+        <header className="certificates-hero">
+          <div className="certificates-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> Certificates</p>
+            <h1>Milestones that document a habit of <em>going further.</em></h1>
+            <p>Competitions, technical programs, research challenges, and practical training—each certificate marks a stage where effort became measurable progress.</p>
+          </div>
+          <aside className="certificate-stack-visual" aria-label="Certificate collection">
+            <div className="certificate-sheet certificate-sheet--back" />
+            <div className="certificate-sheet certificate-sheet--middle" />
+            <div className="certificate-sheet certificate-sheet--front">
+              <span>Verified milestones</span>
+              <strong>{certificateItems.length}</strong>
+              <small>certificates & achievements</small>
+            </div>
+          </aside>
+        </header>
+
+        <div className="certificates-snapshot" aria-label="Certificate areas">
+          <div><strong>Compete</strong><span>algorithms and mathematics</span></div>
+          <div><strong>Build</strong><span>AI and software engineering</span></div>
+          <div><strong>Explore</strong><span>science and research</span></div>
+        </div>
+
+        <div className="certificates-section-heading">
+          <p className="eyebrow">Achievement archive</p>
+          <h2>Evidence from each stage of the journey.</h2>
+        </div>
         <div className="certificate-grid">
-          {certificateItems.map((certificate) => (
+          {certificateItems.map((certificate, index) => (
   <article key={certificate.title} className="certificate-card">
-    <div className="certificate-preview">
-      {certificate.fileType === 'image' ? (
-        <img src={certificate.fileUrl} alt={certificate.title} />
-      ) : (
-        <iframe title={certificate.title} src={certificate.fileUrl} />
-      )}
+    <span className="certificate-card-index">{String(index + 1).padStart(2, '0')}</span>
+    <div className={`certificate-evidence${certificate.evidence ? ' certificate-evidence--multiple' : ''}`}>
+      {(certificate.evidence ?? [{ label: certificate.title, fileUrl: certificate.fileUrl, fileType: certificate.fileType }]).map((item) => (
+        <figure className="certificate-preview" key={item.label}>
+          {item.fileType === 'image' ? (
+            <img src={item.fileUrl} alt={item.label} />
+          ) : (
+            <iframe title={item.label} src={item.fileUrl} />
+          )}
+          {certificate.evidence && <figcaption>{item.label}</figcaption>}
+        </figure>
+      ))}
     </div>
     <div className="certificate-content">
       <p className="card-label">Certificate</p>
@@ -1443,21 +2002,30 @@ function CertificatesPage() {
       <p>
         <strong>Achievement:</strong> {certificate.achievement}
       </p>
-      <div className="certificate-learned">
-        <strong>What I learned:</strong>
+      <details className="certificate-learned">
+        <summary>What I learned <span aria-hidden="true">+</span></summary>
         <ul>
           {certificate.learned.map((point, index) => (
             <li key={index}>{point}</li>
           ))}
         </ul>
+      </details>
+      <div className="certificate-actions">
+        {(certificate.evidence ?? [{ label: 'Open certificate', fileUrl: certificate.fileUrl }]).map((item) => (
+          <a key={item.label} href={item.fileUrl} target="_blank" rel="noreferrer" className="button">
+            {certificate.evidence ? `Open ${item.label}` : item.label}
+          </a>
+        ))}
       </div>
-      <a href={certificate.fileUrl} target="_blank" rel="noreferrer" className="button">
-        Open certificate
-      </a>
     </div>
   </article>
 ))}
         </div>
+
+        <section className="certificates-closing">
+          <div><p className="eyebrow">Beyond credentials</p><h2>The certificate records the milestone. The work behind it shaped the engineer.</h2></div>
+          <Link className="button button--primary" to="/projects">See the work</Link>
+        </section>
       </section>
     </SiteLayout>
   )
@@ -1466,87 +2034,93 @@ function CertificatesPage() {
 function ContactPage() {
   return (
     <SiteLayout>
-      <section className="contact-page">
-        <div className="contact-container">
-          <div className="contact-left">
-            <p className="contact-tag">CONTACT</p>
-
-            <h1>
-              Let's build something <span>awesome.</span>
-            </h1>
-
-            <p className="contact-description">
-              Whether you have a project, a job opportunity, or just want to
-              connect, I'd love to hear from you.
+      <section className="page page--contact">
+        <header className="contact-hero">
+          <div className="contact-hero-copy">
+            <p className="home-kicker"><span aria-hidden="true" /> Let’s connect</p>
+            <h1>Good ideas deserve to become <em>useful systems.</em></h1>
+            <p>
+              I am completing my Computer Engineering degree and looking for opportunities in AI and software engineering where I can solve meaningful problems, learn from strong teams, and help turn ambitious ideas into reliable products.
             </p>
-
-            <div className="contact-info">
-              <a
-                href="mailto:zaintamer10@gmail.com"
-                className="contact-item"
-              >
-                <div className="icon">📧</div>
-
-                <div>
-                  <small>Email</small>
-                  <strong>zaintamer10@gmail.com</strong>
-                </div>
-              </a>
-
-              <a href="tel:+201094332424" className="contact-item">
-                <div className="icon">📞</div>
-
-                <div>
-                  <small>Phone</small>
-                  <strong>+20 109 433 2424</strong>
-                </div>
-              </a>
-
-              <div className="contact-item">
-                <div className="icon">📍</div>
-
-                <div>
-                  <small>Location</small>
-                  <strong>Alexandria, Egypt</strong>
-                </div>
-              </div>
+            <div className="contact-hero-actions">
+              <a className="button button--primary" href="mailto:zaintamer10@gmail.com?subject=Let%27s%20connect">Start a conversation</a>
+              <a className="button" href={cvUrl} target="_blank" rel="noreferrer">View my CV ↗</a>
             </div>
           </div>
 
-          <div className="contact-right">
-            <div className="contact-card">
-              <h2>Find me online</h2>
-
-              <div className="profile-links">
-                {contactLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="profile-link"
-                  >
-                    <div>
-                      <span>{link.label}</span>
-                      <strong>{link.value}</strong>
-                    </div>
-
-                    <span className="arrow">↗</span>
-                  </a>
-                ))}
+          <aside className="contact-intro-card">
+            <div className="contact-person">
+              <img src={profilePhoto} alt="Zain Tamer Zain ElAbdin" />
+              <div>
+                <h2>Zain Tamer</h2>
+                <p>AI Engineer · Software Developer</p>
               </div>
+            </div>
+            <div className="contact-availability">
+              <span aria-hidden="true" />
+              Open to opportunities
+            </div>
+            <div className="contact-looking-for">
+              <p className="card-label">Especially interested in</p>
+              <ul>
+                <li>AI and software engineering roles</li>
+                <li>Research-minded product teams</li>
+                <li>Graduate study and research connections</li>
+                <li>Builders who value learning and community</li>
+              </ul>
+            </div>
+          </aside>
+        </header>
 
-              <a
-                className="download-cv"
-                href={cvUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                ⬇ Download CV
-              </a>
+        <section className="contact-direct" aria-labelledby="contact-direct-title">
+          <div className="contact-section-heading">
+            <p className="eyebrow">Direct contact</p>
+            <h2 id="contact-direct-title">The easiest ways to reach me.</h2>
+          </div>
+          <div className="contact-direct-grid">
+            <a href="mailto:zaintamer10@gmail.com" className="contact-method">
+              <span className="contact-method-icon" aria-hidden="true">@</span>
+              <div><small>Email · Preferred</small><strong>zaintamer10@gmail.com</strong><p>Best for opportunities, projects, and research conversations.</p></div>
+              <span className="contact-method-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="tel:+201094332424" className="contact-method">
+              <span className="contact-method-icon" aria-hidden="true">☎</span>
+              <div><small>Phone</small><strong>+20 109 433 2424</strong><p>Available for direct professional communication.</p></div>
+              <span className="contact-method-arrow" aria-hidden="true">↗</span>
+            </a>
+            <div className="contact-method">
+              <span className="contact-method-icon" aria-hidden="true">⌖</span>
+              <div><small>Based in</small><strong>Alexandria, Egypt</strong><p>Open to local, remote, and international opportunities.</p></div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <section className="contact-online" aria-labelledby="contact-online-title">
+          <div className="contact-section-heading">
+            <p className="eyebrow">Find me online</p>
+            <h2 id="contact-online-title">Follow the work, not just the résumé.</h2>
+            <p>Explore the code, competitions, research, and professional journey behind my portfolio.</p>
+          </div>
+          <div className="contact-profile-grid">
+            {contactLinks.map((link, index) => (
+              <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="contact-profile-card">
+                <span className="contact-profile-number">0{index + 1}</span>
+                <p className="card-label">{link.label}</p>
+                <h3>{link.value}</h3>
+                <p>{link.description}</p>
+                <strong>Visit profile ↗</strong>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="contact-closing">
+          <div>
+            <p className="eyebrow">Have something in mind?</p>
+            <h2>Let’s turn the conversation into something real.</h2>
+          </div>
+          <a className="button button--primary" href="mailto:zaintamer10@gmail.com?subject=Opportunity%20for%20Zain">Email me</a>
+        </section>
       </section>
     </SiteLayout>
   )
@@ -1560,6 +2134,8 @@ function App() {
       <Route path="/projects/:slug" element={<ProjectDetailPage />} />
       <Route path="/research" element={<ResearchPage />} />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/volunteering" element={<VolunteeringPage />} />
+      <Route path="/contributions" element={<Navigate to="/volunteering" replace />} />
       <Route path="/certificates" element={<CertificatesPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/chat" element={<SiteLayout><ChatPage /></SiteLayout>} />
