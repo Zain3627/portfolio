@@ -996,6 +996,95 @@ function TypingIndicator() {
   )
 }
 
+function normalizeChatMarkdown(content: string) {
+  return content
+    .replace(/\r\n?/g, '\n')
+    // Some model responses put bold section titles and escaped bullets on one line.
+    .replace(/(?:^|[ \t]+)\*\*([^*\n]+)\*\*(?=[ \t]+(?:\\\*|\*)[ \t]+)/g, '\n\n## $1')
+    .replace(/(^|[ \t])\\?\*[ \t]+/gm, '\n- ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
+function renderInlineMarkdown(content: string): ReactNode[] {
+  const tokens = content.split(/(\*\*[^*\n]+\*\*|__[^_\n]+__|`[^`\n]+`|\*[^*\n]+\*|_[^_\n]+_)/g)
+
+  return tokens.filter(Boolean).map((token, index) => {
+    if ((token.startsWith('**') && token.endsWith('**')) ||
+        (token.startsWith('__') && token.endsWith('__'))) {
+      return <strong key={index}>{token.slice(2, -2)}</strong>
+    }
+
+    if (token.startsWith('`') && token.endsWith('`')) {
+      return <code key={index}>{token.slice(1, -1)}</code>
+    }
+
+    if ((token.startsWith('*') && token.endsWith('*')) ||
+        (token.startsWith('_') && token.endsWith('_'))) {
+      return <em key={index}>{token.slice(1, -1)}</em>
+    }
+
+    return token
+  })
+}
+
+function MarkdownMessage({ content }: { content: string }) {
+  const lines = normalizeChatMarkdown(content).split('\n')
+  const blocks: ReactNode[] = []
+  let index = 0
+
+  while (index < lines.length) {
+    const line = lines[index].trim()
+
+    if (!line) {
+      index += 1
+      continue
+    }
+
+    const heading = /^(#{1,4})\s+(.+)$/.exec(line)
+    if (heading) {
+      const HeadingTag = `h${Math.min(heading[1].length + 2, 6)}` as 'h3' | 'h4' | 'h5' | 'h6'
+      blocks.push(<HeadingTag key={`heading-${index}`}>{renderInlineMarkdown(heading[2])}</HeadingTag>)
+      index += 1
+      continue
+    }
+
+    if (/^[-+*]\s+/.test(line)) {
+      const items: ReactNode[] = []
+      while (index < lines.length && /^[-+*]\s+/.test(lines[index].trim())) {
+        const item = lines[index].trim().replace(/^[-+*]\s+/, '')
+        items.push(<li key={`item-${index}`}>{renderInlineMarkdown(item)}</li>)
+        index += 1
+      }
+      blocks.push(<ul key={`list-${index}`}>{items}</ul>)
+      continue
+    }
+
+    if (/^\d+[.)]\s+/.test(line)) {
+      const items: ReactNode[] = []
+      while (index < lines.length && /^\d+[.)]\s+/.test(lines[index].trim())) {
+        const item = lines[index].trim().replace(/^\d+[.)]\s+/, '')
+        items.push(<li key={`item-${index}`}>{renderInlineMarkdown(item)}</li>)
+        index += 1
+      }
+      blocks.push(<ol key={`list-${index}`}>{items}</ol>)
+      continue
+    }
+
+    const paragraph: string[] = [line]
+    index += 1
+    while (index < lines.length) {
+      const nextLine = lines[index].trim()
+      if (!nextLine || /^(#{1,4})\s+|^[-+*]\s+|^\d+[.)]\s+/.test(nextLine)) break
+      paragraph.push(nextLine)
+      index += 1
+    }
+    blocks.push(<p key={`paragraph-${index}`}>{renderInlineMarkdown(paragraph.join(' '))}</p>)
+  }
+
+  return <div className="markdown-content">{blocks}</div>
+}
+
 function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MSG])
   const [input, setInput] = useState('')
@@ -1094,6 +1183,8 @@ function ChatPage() {
           "Which project best shows Zain's AI skills?",
           "Tell me about Zain's research experience.",
           "Tell me about Zain's volunteering.",
+          "Tell me about the competitions zain has participated in",
+          "Showcase Zain’s skills"
         ].map(prompt => (
           <button key={prompt} type="button" onClick={() => {
             setInput(prompt)
@@ -1122,7 +1213,7 @@ function ChatPage() {
                 <img className="chat-avatar" src={chatBotAvatar} alt="" aria-hidden="true" />
                 <div className={`bubble bot${msg.error ? ' bubble-error' : ''}`}>
                   {msg.error && <span className="error-icon" aria-label="Error">⚠ </span>}
-                  {msg.content}
+                  <MarkdownMessage content={msg.content} />
                 </div>
               </div>
             ) : (
