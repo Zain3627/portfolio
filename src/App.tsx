@@ -1000,12 +1000,18 @@ function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MSG])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const idCounter = useRef(1)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const messagesElement = messagesRef.current
+    if (!messagesElement) return
+
+    messagesElement.scrollTo({
+      top: messagesElement.scrollHeight,
+      behavior: 'smooth',
+    })
   }, [messages, loading])
 
   async function sendMessage() {
@@ -1109,7 +1115,7 @@ function ChatPage() {
           <span className="chat-window-badge">AI</span>
         </div>
 
-        <div className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
+        <div ref={messagesRef} className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
           {messages.map(msg =>
             msg.role === 'bot' ? (
               <div key={msg.id} className="msg-row bot">
@@ -1128,7 +1134,6 @@ function ChatPage() {
           )}
 
           {loading && <TypingIndicator />}
-          <div ref={bottomRef} />
         </div>
 
         <div className="chat-input-row">
