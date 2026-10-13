@@ -3338,6 +3338,15 @@ a.contact-method:focus-visible {
   animation: pulse-status 2.4s ease-in-out infinite;
 }
 
+.chat-header-status--offline {
+  color: var(--text-soft);
+}
+
+.chat-header-status--offline .status-dot {
+  background: #f87171;
+  animation: none;
+}
+
 .chat-messages {
   display: flex;
   flex: 1;
@@ -3664,6 +3673,15 @@ a.contact-method:focus-visible {
   font-size: 0.58rem;
   font-weight: 800;
   letter-spacing: 0.12em;
+}
+
+.chat-window-badge--offline {
+  border-color: rgba(248, 113, 113, 0.32);
+  color: #fca5a5;
+}
+
+.chat-bubble--offline {
+  filter: grayscale(0.35);
 }
 
 .chat-messages {

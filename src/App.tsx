@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams, Link } from 'react-router-dom'
 import './App.css'
 
@@ -883,28 +883,6 @@ interface Message {
   error?: boolean
 }
 
-// ─── FastAPI skeleton ─────────────────────────────────────────────────────────
-
-// const FASTAPI_BASE = '' // TODO: update to your deployed URL
-
-async function askChatbot(question: string): Promise<string> {
-  const response = await fetch(`/api/ask`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ question }),
-})
-
-  if (!response.ok) {
-    throw new Error(`Server responded with ${response.status}`)
-  }
-
-  const data = await response.json()
-
-  // TODO: adjust key to match your FastAPI response shape, e.g. data.answer
-  if (!data.answer) throw new Error('Unexpected response format')
-  return data.answer as string
-}
-
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
 function SiteLayout({ children }: { children: ReactNode }) {
@@ -963,9 +941,9 @@ function SiteLayout({ children }: { children: ReactNode }) {
       </footer>
       <Link
         to="/chat"
-        className="chat-bubble"
-        aria-label="Open Chat with Zain's bot"
-        data-tooltip="Chat with Zain's bot"
+        className="chat-bubble chat-bubble--offline"
+        aria-label="Chatbot currently unavailable"
+        data-tooltip="Chatbot unavailable"
       >
         <img className="chat-bubble__icon" src={chatBotAvatar} alt="" aria-hidden="true" />
       </Link>
@@ -978,22 +956,7 @@ function SiteLayout({ children }: { children: ReactNode }) {
 const WELCOME_MSG: Message = {
   id: 0,
   role: 'bot',
-  content: "Hi! I'm Zain's AI assistant. Ask me anything about his work, projects, or experience.",
-}
-
-const MAX_CHAT_MESSAGE_LENGTH = 150
-
-function TypingIndicator() {
-  return (
-    <div className="msg-row bot">
-      <div className="chat-avatar" aria-hidden="true">Z</div>
-      <div className="bubble bot typing-bubble">
-        <span className="dot" />
-        <span className="dot" />
-        <span className="dot" />
-      </div>
-    </div>
-  )
+  content: "The chatbot is currently unavailable because its AWS hosting is no longer active. Support is not available at this time. Thank you for understanding.",
 }
 
 function normalizeChatMarkdown(content: string) {
@@ -1086,113 +1049,24 @@ function MarkdownMessage({ content }: { content: string }) {
 }
 
 function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([WELCOME_MSG])
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const messagesRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const idCounter = useRef(1)
-
-  useEffect(() => {
-    const messagesElement = messagesRef.current
-    if (!messagesElement) return
-
-    messagesElement.scrollTo({
-      top: messagesElement.scrollHeight,
-      behavior: 'smooth',
-    })
-  }, [messages, loading])
-
-  async function sendMessage() {
-    const text = input.trim()
-    if (!text || loading) return
-
-    if (text.length > MAX_CHAT_MESSAGE_LENGTH) {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: idCounter.current++,
-          role: 'bot',
-          content: `Maximum message length is ${MAX_CHAT_MESSAGE_LENGTH} characters. Please shorten your question and try again.`,
-          error: true,
-        },
-      ])
-      setTimeout(() => inputRef.current?.focus(), 50)
-      return
-    }
-
-    const userMsg: Message = { id: idCounter.current++, role: 'user', content: text }
-    setMessages(prev => [...prev, userMsg])
-    setInput('')
-    setLoading(true)
-
-    try {
-      const answer = await askChatbot(text)
-      setMessages(prev => [
-        ...prev,
-        { id: idCounter.current++, role: 'bot', content: answer },
-      ])
-    } catch (err) {
-      const detail =
-        err instanceof Error ? err.message : 'Unknown error'
-      setMessages(prev => [
-        ...prev,
-        {
-          id: idCounter.current++,
-          role: 'bot',
-          content: `Sorry, I couldn't reach the server right now. (${detail}) Please try again later.`,
-          error: true,
-        },
-      ])
-    } finally {
-      setLoading(false)
-      setTimeout(() => inputRef.current?.focus(), 50)
-    }
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
-  }
-
   return (
     <div className="chat-page">
       <div className="chat-header-card">
         <div className="chat-header-copy">
           <p className="eyebrow">Portfolio assistant</p>
-          <h1>Ask beyond the résumé.</h1>
-          <p>Explore the thinking, tools, and stories behind my work.</p>
+          <h1>Chatbot unavailable.</h1>
+          <p>The portfolio remains available to explore while the assistant is offline.</p>
         </div>
         <div className="chat-agent-card">
           <img className="chat-header-avatar" src={chatBotAvatar} alt="Zain's AI assistant" />
           <div>
             <p className="chat-header-name">Zain’s AI guide</p>
-            <p className="chat-header-status">
+            <p className="chat-header-status chat-header-status--offline">
               <span className="status-dot" aria-hidden="true" />
-              Ready to help
+              Currently offline
             </p>
           </div>
         </div>
-      </div>
-
-      <div className="chat-suggestions" aria-label="Suggested questions">
-        <span>Try asking</span>
-        {[
-          "Which project best shows Zain's AI skills?",
-          "Tell me about Zain's research experience.",
-          "Tell me about Zain's volunteering.",
-          "Tell me about the competitions zain has participated in",
-          "Showcase Zain’s skills"
-        ].map(prompt => (
-          <button key={prompt} type="button" onClick={() => {
-            setInput(prompt)
-            inputRef.current?.focus()
-          }}>
-            {prompt}
-          </button>
-        ))}
       </div>
 
       <div className="chat-window">
@@ -1203,48 +1077,30 @@ function ChatPage() {
             <span className="chat-window-dot" />
           </div>
           <p>Conversation with portfolio assistant</p>
-          <span className="chat-window-badge">AI</span>
+          <span className="chat-window-badge chat-window-badge--offline">Offline</span>
         </div>
 
-        <div ref={messagesRef} className="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
-          {messages.map(msg =>
-            msg.role === 'bot' ? (
-              <div key={msg.id} className="msg-row bot">
-                <img className="chat-avatar" src={chatBotAvatar} alt="" aria-hidden="true" />
-                <div className={`bubble bot${msg.error ? ' bubble-error' : ''}`}>
-                  {msg.error && <span className="error-icon" aria-label="Error">⚠ </span>}
-                  <MarkdownMessage content={msg.content} />
-                </div>
-              </div>
-            ) : (
-              <div key={msg.id} className="msg-row user">
-                <div className="chat-avatar user-avatar" aria-hidden="true">You</div>
-                <div className="bubble user">{msg.content}</div>
-              </div>
-            )
-          )}
-
-          {loading && <TypingIndicator />}
+        <div className="chat-messages" role="status" aria-live="polite" aria-label="Chatbot availability">
+          <div className="msg-row bot">
+            <img className="chat-avatar" src={chatBotAvatar} alt="" aria-hidden="true" />
+            <div className="bubble bot bubble-error">
+              <span className="error-icon" aria-label="Unavailable">⚠ </span>
+              <MarkdownMessage content={WELCOME_MSG.content} />
+            </div>
+          </div>
         </div>
 
         <div className="chat-input-row">
           <input
-            ref={inputRef}
             className="chat-input"
             type="text"
-            placeholder="Ask about a project, skill, or experience…"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={loading}
-            maxLength={MAX_CHAT_MESSAGE_LENGTH}
+            placeholder="Chatbot support is currently unavailable"
+            disabled
             aria-label="Message input"
           />
-          <span className="chat-character-count">{input.length}/{MAX_CHAT_MESSAGE_LENGTH}</span>
           <button
             className="chat-send-btn"
-            onClick={sendMessage}
-            disabled={loading || !input.trim()}
+            disabled
             aria-label="Send message"
           >
             <span>Send</span>
