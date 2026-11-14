@@ -68,6 +68,7 @@ const certificateUrls = [
   new URL('../media/certificates/Octans.jpeg', import.meta.url).href,
   new URL('../media/certificates/nasa_covid_2019.pdf', import.meta.url).href,
   new URL('../media/certificates/Beam line certificate.pdf', import.meta.url).href,
+  new URL('../media/HaT AKT26 Certificate - Zain Awad - 1044.pdf', import.meta.url).href,
 ]
 
 // type MediaFrame = {
@@ -665,6 +666,16 @@ const researchItems: ResearchItem[] = [
 ]
 
 const certificateItems: CertificateItem[] = [
+  {
+    title: 'Hackathon @ Al-Khawarizmi Tour 2026',
+    fileUrl: certificateUrls[18],
+    achievement:
+      'Participated in the Hackathon @ Al-Khawarizmi Tour 2026, dedicated to High Performance Computing and Artificial Intelligence.',
+    learned: [
+      'Explored high-performance computing and artificial intelligence in a hackathon setting.',
+    ],
+    date: 'Nov 2026',
+  },
   {
     title: 'Qualified for the 2026 ECPC Finals',
     fileUrl: certificateUrls[10].toString(),
