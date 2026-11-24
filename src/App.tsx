@@ -466,6 +466,15 @@ interface ContributionEntry {
   contributions: string[]
   media: ProjectMedia[]
   logo: string
+  programs?: TeachingProgram[]
+}
+
+interface TeachingProgram {
+  title: string
+  role: string
+  meta: string
+  summary: string
+  topics: string[]
 }
 
 
@@ -536,6 +545,45 @@ const communityContributions: ContributionEntry[] = [
       { src: awsFeedback, label: 'Participant feedback after the two-workshop journey', fit: 'contain' },
     ],
     logo: awsCloudClubImage,
+    programs: [
+      {
+        title: "AWS Academy Machine Learning Foundations",
+        role: "Lead tutor · all sessions",
+        meta: "8 modules · ~23 hours · guided SageMaker labs",
+        summary:
+          "Led every tutoring session of the course, taking students from core ML terminology to labeling, training, tuning, and deploying their own models on AWS, then into managed AI services and generative AI.",
+        topics: [
+          "What machine learning is, the business problems it solves, and the ML process",
+          "End-to-end ML pipeline in Amazon SageMaker: collecting and securing data, evaluation, and visualization",
+          "Feature engineering and encoding categorical variables",
+          "Training with XGBoost, evaluating model accuracy, and hyperparameter tuning",
+          "Hosting and consuming a model on AWS, plus a class project to select and train a model",
+          "Forecasting with Amazon Forecast",
+          "Computer vision: image labeling and facial recognition",
+          "Natural language processing: building an appointment-scheduling bot",
+          "Introduction to generative AI and the AWS services behind it",
+        ],
+      },
+      {
+        title: "AWS Academy Cloud Foundations",
+        role: "Tutor",
+        meta: "10 modules · ~20 hours · hands-on labs",
+        summary:
+          "Tutored sessions in the club's cloud foundations track, covering cloud concepts, AWS core services, security, architecture, pricing, and support.",
+        topics: [
+          "Cloud concepts, advantages of the cloud, and moving to AWS",
+          "Cloud economics and billing: pricing, TCO, AWS Organizations, and support plans",
+          "AWS global infrastructure: Regions, Availability Zones, and edge locations",
+          "Cloud security: the shared responsibility model and IAM",
+          "Networking and content delivery with Amazon VPC",
+          "Compute: when to use EC2, Lambda, and Elastic Beanstalk",
+          "Storage: S3, EBS, EFS, and S3 Glacier",
+          "Databases: RDS, DynamoDB, Redshift, and Aurora",
+          "Cloud architecture principles",
+          "Elastic Load Balancing, CloudWatch, and EC2 Auto Scaling",
+        ],
+      },
+    ],
   },
   {
     organization: "Competitive Programming Club",
@@ -556,6 +604,42 @@ const communityContributions: ContributionEntry[] = [
       { src: cpcHackathonTwo, label: 'A focused HackerRank competition environment' },
     ],
     logo: cpclogo,
+    programs: [
+      {
+        title: "Level 0 — Newcomer",
+        role: "Topic sessions & upsolving · Season 1",
+        meta: "8 topics",
+        summary:
+          "Spent my first season explaining Level 0 topics to newcomers and running upsolving sessions that walked through contest problems after they ended.",
+        topics: [
+          "I/O & data types",
+          "Conditions & operators",
+          "Loops",
+          "Arrays",
+          "Functions",
+          "STL — part 1",
+          "STL — part 2",
+          "Time & space complexity",
+        ],
+      },
+      {
+        title: "Level 1 — Intermediate",
+        role: "Lead tutor · Season 2",
+        meta: "8 topics",
+        summary:
+          "In the second season I led the Level 1 tutoring sessions, moving students from language basics into core algorithmic techniques.",
+        topics: [
+          "Recursion",
+          "Complete search",
+          "Sorting & searching",
+          "Prefix sums & frequency arrays",
+          "Greedy algorithms",
+          "Amortized analysis",
+          "Bit operations",
+          "Basic number theory",
+        ],
+      },
+    ],
   },
 ]
 
@@ -1898,6 +1982,30 @@ function VolunteeringPage() {
                   ))}
                 </div>
               </div>
+
+              {entry.programs && (
+                <div className="volunteering-programs">
+                  <p className="card-label">What I taught</p>
+                  <div className="volunteering-programs-grid">
+                    {entry.programs.map((program) => (
+                      <section key={program.title} className="volunteering-program">
+                        <p className="volunteering-program-role">{program.role}</p>
+                        <h4>{program.title}</h4>
+                        <p className="volunteering-program-meta">{program.meta}</p>
+                        <p className="volunteering-program-summary">{program.summary}</p>
+                        <details className="volunteering-program-topics">
+                          <summary>Topics covered <span aria-hidden="true">+</span></summary>
+                          <ol>
+                            {program.topics.map((topic) => (
+                              <li key={topic}>{topic}</li>
+                            ))}
+                          </ol>
+                        </details>
+                      </section>
+                    ))}
+                  </div>
+                </div>
+              )}
             </article>
           ))}
         </div>

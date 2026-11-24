@@ -2671,6 +2671,96 @@
   background: rgba(10, 22, 40, 0.36);
 }
 
+.volunteering-programs {
+  display: grid;
+  gap: 14px;
+}
+
+.volunteering-programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.volunteering-program {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: rgba(10, 22, 40, 0.36);
+}
+
+.volunteering-program-role {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.volunteering-program h4 {
+  margin: 0;
+  color: var(--heading);
+  font-size: 1.12rem;
+  line-height: 1.35;
+}
+
+.volunteering-program-meta {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+}
+
+.volunteering-program-summary {
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.volunteering-program-topics {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+}
+
+.volunteering-program-topics summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--accent-strong);
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+.volunteering-program-topics summary::-webkit-details-marker {
+  display: none;
+}
+
+.volunteering-program-topics summary span {
+  font-size: 1.15rem;
+  transition: transform 160ms ease;
+}
+
+.volunteering-program-topics[open] summary span {
+  transform: rotate(45deg);
+}
+
+.volunteering-program-topics ol {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 22px;
+  line-height: 1.55;
+}
+
+.volunteering-program-topics li::marker {
+  color: var(--text-soft);
+  font-size: 0.85em;
+}
+
 .volunteering-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
